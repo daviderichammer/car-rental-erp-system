@@ -1,0 +1,278 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  /* Car Rental ERP Design System */
+  --radius: 0.5rem;
+  
+  /* Primary Blue Theme */
+  --background: #ffffff;
+  --foreground: #111827;
+  --card: #ffffff;
+  --card-foreground: #111827;
+  --popover: #ffffff;
+  --popover-foreground: #111827;
+  
+  /* Deep Blue Primary */
+  --primary: #1e3a8a;
+  --primary-foreground: #ffffff;
+  
+  /* Light Blue Secondary */
+  --secondary: #dbeafe;
+  --secondary-foreground: #1e3a8a;
+  
+  /* Gray Muted */
+  --muted: #f9fafb;
+  --muted-foreground: #6b7280;
+  
+  /* Bright Blue Accent */
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  
+  /* Red Destructive */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  
+  /* Borders and Inputs */
+  --border: #e5e7eb;
+  --input: #f9fafb;
+  --ring: #3b82f6;
+  
+  /* Chart Colors */
+  --chart-1: #3b82f6; /* Blue */
+  --chart-2: #10b981; /* Emerald */
+  --chart-3: #f59e0b; /* Amber */
+  --chart-4: #8b5cf6; /* Purple */
+  --chart-5: #14b8a6; /* Teal */
+  
+  /* Sidebar Colors */
+  --sidebar: #1e3a8a;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #1e40af;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #1e40af;
+  --sidebar-ring: #3b82f6;
+  
+  /* Success and Warning Colors */
+  --success: #10b981;
+  --success-foreground: #ffffff;
+  --warning: #f59e0b;
+  --warning-foreground: #ffffff;
+  --info: #3b82f6;
+  --info-foreground: #ffffff;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #f8fafc;
+  --popover: #1e293b;
+  --popover-foreground: #f8fafc;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #334155;
+  --secondary-foreground: #f8fafc;
+  --muted: #334155;
+  --muted-foreground: #94a3b8;
+  --accent: #3b82f6;
+  --accent-foreground: #ffffff;
+  --destructive: #ef4444;
+  --border: #334155;
+  --input: #334155;
+  --ring: #3b82f6;
+  --chart-1: #3b82f6;
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #8b5cf6;
+  --chart-5: #14b8a6;
+  --sidebar: #0f172a;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #334155;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: #334155;
+  --sidebar-ring: #3b82f6;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  }
+  
+  /* Custom utility classes for car rental ERP */
+  .text-success {
+    color: var(--success);
+  }
+  
+  .text-warning {
+    color: var(--warning);
+  }
+  
+  .text-info {
+    color: var(--info);
+  }
+  
+  .bg-success {
+    background-color: var(--success);
+  }
+  
+  .bg-warning {
+    background-color: var(--warning);
+  }
+  
+  .bg-info {
+    background-color: var(--info);
+  }
+  
+  /* Mobile-first responsive utilities */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-md hover:scale-[1.02];
+  }
+  
+  /* Status indicators */
+  .status-available {
+    @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+  }
+  
+  .status-rented {
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+  }
+  
+  .status-maintenance {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+  }
+  
+  .status-out-of-service {
+    @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+  }
+  
+  /* Reservation status */
+  .status-pending {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+  }
+  
+  .status-confirmed {
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+  }
+  
+  .status-in-progress {
+    @apply bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200;
+  }
+  
+  .status-completed {
+    @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+  }
+  
+  .status-cancelled {
+    @apply bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-foreground);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent);
+}
+
+/* Loading animations */
+@keyframes pulse-slow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Mobile navigation */
+@media (max-width: 768px) {
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-t border-border;
+  }
+  
+  .mobile-nav-item {
+    @apply flex-1 flex flex-col items-center justify-center py-2 px-1 text-xs;
+  }
+}
+
+/* Desktop sidebar */
+@media (min-width: 769px) {
+  .desktop-sidebar {
+    @apply fixed left-0 top-0 h-full w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border;
+  }
+  
+  .desktop-main {
+    @apply ml-64;
+  }
+}
+
