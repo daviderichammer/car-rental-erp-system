@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental ERP - Dynamic Pricing System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+        
+        /* Login Styles */
+        .login-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+        
+        .login-form h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .login-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .main-container {
+            display: flex;
+            height: calc(100vh - 70px);
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            padding: 15px 25px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-left: 4px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nav-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .nav-item.active {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+            color: #1976d2;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .content-section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .section-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-header h2 {
+            color: #333;
+            font-size: 20px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table th,
+        .table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status.available {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.rented {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .status.maintenance {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 0;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        
+        .modal-footer {
+            padding: 20px 25px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+        
+        /* Pricing Calendar Styles */
+        .pricing-calendar {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .calendar-nav button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .calendar-day {
+            background: white;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            min-height: 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .calendar-day:hover {
+            background: #f8f9fa;
+        }
+        
+        .calendar-day.header {
+            background: #007bff;
+            color: white;
+            font-weight: bold;
+            cursor: default;
+        }
+        
+        .calendar-day.other-month {
+            color: #ccc;
+        }
+        
+        .calendar-day.selected {
+            background: #007bff;
+            color: white;
+        }
+        
+        .day-price {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .price-high {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .price-medium {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+        
+        .price-low {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        /* Duration Discount Styles */
+        .discount-tiers {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .discount-tier {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .discount-tier.active {
+            border-color: #007bff;
+            background: #e3f2fd;
+        }
+        
+        .tier-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .tier-duration {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .tier-discount {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        /* Pricing Calculator Styles */
+        .pricing-calculator {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .calculator-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .price-breakdown {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        
+        .price-row.total {
+            font-weight: bold;
+            font-size: 18px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        
+        .savings {
+            color: #28a745;
+            font-weight: bold;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .nav-item {
+                padding: 10px 15px;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .calendar-grid {
+                font-size: 12px;
+            }
+            
+            .calendar-day {
+                min-height: 40px;
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-form">
+            <h1>🚗 Car Rental ERP</h1>
+            <p class="login-subtitle">Dynamic Pricing Management System</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" value="admin@carrental.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" value="admin123" required>
+                </div>
+                <button type="submit" class="login-btn">🚀 Login to ERP System</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <div class="header">
+            <h1>🚗 Car Rental ERP Dashboard</h1>
+            <div class="user-info">
+                <span>Welcome, <strong id="userName">System Administrator</strong></span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+
+        <div class="main-container">
+            <div class="sidebar">
+                <div class="nav-item active" onclick="showSection('dashboard')">
+                    📊 Dashboard
+                </div>
+                <div class="nav-item" onclick="showSection('vehicles')">
+                    🚗 Vehicles
+                </div>
+                <div class="nav-item" onclick="showSection('pricing')">
+                    💰 Dynamic Pricing
+                </div>
+                <div class="nav-item" onclick="showSection('customers')">
+                    👥 Customers
+                </div>
+                <div class="nav-item" onclick="showSection('reservations')">
+                    📅 Reservations
+                </div>
+                <div class="nav-item" onclick="showSection('financial')">
+                    💰 Financial
+                </div>
+                <div class="nav-item" onclick="showSection('maintenance')">
+                    🔧 Maintenance
+                </div>
+            </div>
+
+            <div class="content">
+                <!-- Dashboard Section -->
+                <div id="dashboardSection" class="content-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Vehicles</h3>
+                            <div class="value" id="totalVehicles">3</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Active Reservations</h3>
+                            <div class="value" id="activeReservations">1</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Total Customers</h3>
+                            <div class="value" id="totalCustomers">2</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Monthly Revenue</h3>
+                            <div class="value" id="monthlyRevenue">$2,340.00</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicles Section -->
+                <div id="vehiclesSection" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2>Vehicle Management</h2>
+                        <button class="btn btn-primary" onclick="showAddVehicleModal()">Add Vehicle</button>
+                    </div>
+                    <div id="vehicleSuccessMessage" class="success-message" style="display: none;">
+                        Vehicle added successfully!
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Make & Model</th>
+                                <th>Year</th>
+                                <th>License Plate</th>
+                                <th>Status</th>
+                                <th>Base Daily Rate</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vehicleTableBody">
+                            <tr>
+                                <td>Tesla Model 3</td>
+                                <td>2021</td>
+                                <td>A75RAW</td>
+                                <td><span class="status available">available</span></td>
+                                <td>$60</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" onclick="editVehicle(0)">Edit</button>
+                                    <button class="btn btn-success btn-sm" onclick="managePricing(0)">Pricing</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteVehicle(0)">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>BMW X5</td>
+                                <td>2020</td>
+                                <td>B23XYZ</td>
+                                <td><span class="status rented">rented</span></td>
+                                <td>$85</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" onclick="editVehicle(1)">Edit</button>
+                                    <button class="btn btn-success btn-sm" onclick="managePricing(1)">Pricing</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteVehicle(1)">Delete</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Honda Civic</td>
+                                <td>2022</td>
+                                <td>H123ABC</td>
+                                <td><span class="status available">available</span></td>
+                                <td>$45</td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" onclick="editVehicle(2)">Edit</button>
+                                    <button class="btn btn-success btn-sm" onclick="managePricing(2)">Pricing</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteVehicle(2)">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Dynamic Pricing Section -->
+                <div id="pricingSection" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2>Dynamic Pricing Management</h2>
+                        <div>
+                            <button class="btn btn-primary" onclick="showPricingCalculator()">Pricing Calculator</button>
+                            <button class="btn btn-success" onclick="showDurationDiscounts()">Duration Discounts</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Vehicle Selection -->
+                    <div style="padding: 20px; background: #f8f9fa; margin-bottom: 20px;">
+                        <label for="pricingVehicleSelect" style="font-weight: bold; margin-bottom: 10px; display: block;">Select Vehicle for Pricing Management:</label>
+                        <select id="pricingVehicleSelect" style="padding: 10px; border-radius: 6px; border: 1px solid #ddd; width: 300px;" onchange="loadVehiclePricing()">
+                            <option value="0">Tesla Model 3 (2021) - A75RAW</option>
+                            <option value="1">BMW X5 (2020) - B23XYZ</option>
+                            <option value="2">Honda Civic (2022) - H123ABC</option>
+                        </select>
+                    </div>
+
+                    <!-- Pricing Calendar -->
+                    <div class="pricing-calendar">
+                        <div class="calendar-header">
+                            <h3>Pricing Calendar</h3>
+                            <div class="calendar-nav">
+                                <button onclick="previousMonth()">‹ Previous</button>
+                                <span id="currentMonth">January 2025</span>
+                                <button onclick="nextMonth()">Next ›</button>
+                            </div>
+                        </div>
+                        <div class="calendar-grid" id="pricingCalendar">
+                            <!-- Calendar will be generated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Duration Discounts -->
+                    <div style="background: white; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+                        <h3 style="margin-bottom: 15px;">Duration Discount Tiers</h3>
+                        <div class="discount-tiers" id="discountTiers">
+                            <!-- Discount tiers will be generated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other sections (customers, reservations, etc.) remain the same -->
+                <div id="customersSection" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2>Customer Management</h2>
+                        <button class="btn btn-primary">Add Customer</button>
+                    </div>
+                    <p style="padding: 20px; color: #666;">Customer management functionality - Add, edit, and manage customer profiles and rental history.</p>
+                </div>
+
+                <div id="reservationsSection" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2>Reservation Management</h2>
+                        <button class="btn btn-primary">New Reservation</button>
+                    </div>
+                    <p style="padding: 20px; color: #666;">Reservation management functionality - Create, modify, and track bookings with dynamic pricing.</p>
+                </div>
+
+                <div id="financialSection" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2>Financial Management</h2>
+                        <button class="btn btn-primary">Add Transaction</button>
+                    </div>
+                    <p style="padding: 20px; color: #666;">Financial management functionality - Track payments, revenue, and generate reports.</p>
+                </div>
+
+                <div id="maintenanceSection" class="content-section" style="display: none;">
+                    <div class="section-header">
+                        <h2>Maintenance Management</h2>
+                        <button class="btn btn-primary">Schedule Maintenance</button>
+                    </div>
+                    <p style="padding: 20px; color: #666;">Maintenance management functionality - Schedule and track vehicle maintenance and repairs.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Vehicle Modal -->
+    <div id="addVehicleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Vehicle</h3>
+                <button class="close" onclick="closeModal('addVehicleModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addVehicleForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="vehicleMake">Make</label>
+                            <input type="text" id="vehicleMake" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleModel">Model</label>
+                            <input type="text" id="vehicleModel" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleYear">Year</label>
+                            <input type="number" id="vehicleYear" min="1990" max="2025" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleLicense">License Plate</label>
+                            <input type="text" id="vehicleLicense" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleRate">Base Daily Rate ($)</label>
+                            <input type="number" id="vehicleRate" min="0" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="vehicleStatus">Status</label>
+                            <select id="vehicleStatus" required>
+                                <option value="available">Available</option>
+                                <option value="rented">Rented</option>
+                                <option value="maintenance">Maintenance</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('addVehicleModal')">Cancel</button>
+                <button class="btn btn-success" onclick="saveVehicle()">Save Vehicle</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Management Modal -->
+    <div id="pricingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Manage Vehicle Pricing</h3>
+                <button class="close" onclick="closeModal('pricingModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="pricingModalContent">
+                    <!-- Pricing management content will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('pricingModal')">Close</button>
+                <button class="btn btn-success" onclick="savePricingChanges()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pricing Calculator Modal -->
+    <div id="calculatorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Pricing Calculator</h3>
+                <button class="close" onclick="closeModal('calculatorModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="pricing-calculator">
+                    <div class="calculator-inputs">
+                        <div class="form-group">
+                            <label for="calcVehicle">Vehicle</label>
+                            <select id="calcVehicle" onchange="calculatePrice()">
+                                <option value="0">Tesla Model 3 - $60/day</option>
+                                <option value="1">BMW X5 - $85/day</option>
+                                <option value="2">Honda Civic - $45/day</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="calcStartDate">Start Date</label>
+                            <input type="date" id="calcStartDate" onchange="calculatePrice()">
+                        </div>
+                        <div class="form-group">
+                            <label for="calcEndDate">End Date</label>
+                            <input type="date" id="calcEndDate" onchange="calculatePrice()">
+                        </div>
+                    </div>
+                    <div class="price-breakdown" id="priceBreakdown">
+                        <div class="price-row">
+                            <span>Rental Duration:</span>
+                            <span id="rentalDays">0 days</span>
+                        </div>
+                        <div class="price-row">
+                            <span>Base Rate:</span>
+                            <span id="baseRate">$0.00</span>
+                        </div>
+                        <div class="price-row">
+                            <span>Subtotal:</span>
+                            <span id="subtotal">$0.00</span>
+                        </div>
+                        <div class="price-row">
+                            <span>Duration Discount:</span>
+                            <span id="discountAmount" class="savings">-$0.00</span>
+                        </div>
+                        <div class="price-row total">
+                            <span>Total Price:</span>
+                            <span id="totalPrice">$0.00</span>
+                        </div>
+                        <div id="discountInfo" style="margin-top: 10px; padding: 10px; background: #e8f5e8; border-radius: 6px; color: #2e7d32; display: none;">
+                            <strong>Great savings!</strong> <span id="discountText"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        let vehicles = [
+            { id: 0, make: 'Tesla', model: 'Model 3', year: 2021, license: 'A75RAW', rate: 60, status: 'available' },
+            { id: 1, make: 'BMW', model: 'X5', year: 2020, license: 'B23XYZ', rate: 85, status: 'rented' },
+            { id: 2, make: 'Honda', model: 'Civic', year: 2022, license: 'H123ABC', rate: 45, status: 'available' }
+        ];
+
+        let currentDate = new Date();
+        let currentVehicleId = 0;
+
+        // Duration discount tiers
+        const durationDiscounts = [
+            { minDays: 1, maxDays: 2, discount: 0, name: 'Daily Rate', description: '1-2 days' },
+            { minDays: 3, maxDays: 6, discount: 5, name: '3-6 Day Discount', description: '3-6 days' },
+            { minDays: 7, maxDays: 13, discount: 15, name: 'Weekly Discount', description: '7-13 days' },
+            { minDays: 14, maxDays: 20, discount: 25, name: 'Bi-Weekly Discount', description: '14-20 days' },
+            { minDays: 21, maxDays: 59, discount: 35, name: 'Monthly Discount', description: '21-59 days' },
+            { minDays: 60, maxDays: null, discount: 45, name: 'Extended Discount', description: '60+ days' }
+        ];
+
+        // Vehicle pricing data (simulated)
+        let vehiclePricing = {
+            0: { // Tesla Model 3
+                baseRate: 60,
+                weekendMultiplier: 1.2,
+                holidayMultiplier: 1.5,
+                dateOverrides: {
+                    '2025-01-15': 80,
+                    '2025-01-20': 90,
+                    '2025-02-14': 100
+                }
+            },
+            1: { // BMW X5
+                baseRate: 85,
+                weekendMultiplier: 1.3,
+                holidayMultiplier: 1.6,
+                dateOverrides: {
+                    '2025-01-15': 120,
+                    '2025-01-20': 130
+                }
+            },
+            2: { // Honda Civic
+                baseRate: 45,
+                weekendMultiplier: 1.1,
+                holidayMultiplier: 1.3,
+                dateOverrides: {
+                    '2025-01-15': 60,
+                    '2025-02-14': 70
+                }
+            }
+        };
+
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email === 'admin@carrental.com' && password === 'admin123') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                document.getElementById('userName').textContent = 'System Administrator';
+                generatePricingCalendar();
+                generateDiscountTiers();
+                setDefaultDates();
+            } else {
+                alert('Invalid credentials. Please use admin@carrental.com / admin123');
+            }
+        });
+
+        function logout() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+        }
+
+        function showSection(section) {
+            // Hide all sections
+            const sections = ['dashboard', 'vehicles', 'pricing', 'customers', 'reservations', 'financial', 'maintenance'];
+            sections.forEach(s => {
+                document.getElementById(s + 'Section').style.display = 'none';
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(section + 'Section').style.display = 'block';
+            
+            // Add active class to clicked nav item
+            event.target.classList.add('active');
+        }
+
+        function showAddVehicleModal() {
+            document.getElementById('addVehicleModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function saveVehicle() {
+            const make = document.getElementById('vehicleMake').value;
+            const model = document.getElementById('vehicleModel').value;
+            const year = document.getElementById('vehicleYear').value;
+            const license = document.getElementById('vehicleLicense').value;
+            const rate = document.getElementById('vehicleRate').value;
+            const status = document.getElementById('vehicleStatus').value;
+            
+            if (make && model && year && license && rate) {
+                const newVehicle = {
+                    id: vehicles.length,
+                    make: make,
+                    model: model,
+                    year: parseInt(year),
+                    license: license,
+                    rate: parseFloat(rate),
+                    status: status
+                };
+                
+                vehicles.push(newVehicle);
+                
+                // Initialize pricing for new vehicle
+                vehiclePricing[newVehicle.id] = {
+                    baseRate: parseFloat(rate),
+                    weekendMultiplier: 1.2,
+                    holidayMultiplier: 1.5,
+                    dateOverrides: {}
+                };
+                
+                updateVehicleTable();
+                updateVehicleSelects();
+                closeModal('addVehicleModal');
+                document.getElementById('addVehicleForm').reset();
+                
+                // Show success message
+                const successMsg = document.getElementById('vehicleSuccessMessage');
+                successMsg.style.display = 'block';
+                setTimeout(() => {
+                    successMsg.style.display = 'none';
+                }, 3000);
+                
+                // Update stats
+                document.getElementById('totalVehicles').textContent = vehicles.length;
+            }
+        }
+
+        function updateVehicleTable() {
+            const tbody = document.getElementById('vehicleTableBody');
+            tbody.innerHTML = '';
+            
+            vehicles.forEach((vehicle, index) => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${vehicle.make} ${vehicle.model}</td>
+                    <td>${vehicle.year}</td>
+                    <td>${vehicle.license}</td>
+                    <td><span class="status ${vehicle.status}">${vehicle.status}</span></td>
+                    <td>$${vehicle.rate}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm" onclick="editVehicle(${index})">Edit</button>
+                        <button class="btn btn-success btn-sm" onclick="managePricing(${index})">Pricing</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteVehicle(${index})">Delete</button>
+                    </td>
+                `;
+            });
+        }
+
+        function updateVehicleSelects() {
+            const selects = ['pricingVehicleSelect', 'calcVehicle'];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '';
+                vehicles.forEach((vehicle, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${vehicle.make} ${vehicle.model} (${vehicle.year}) - ${vehicle.license}`;
+                    if (selectId === 'calcVehicle') {
+                        option.textContent += ` - $${vehicle.rate}/day`;
+                    }
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        function editVehicle(index) {
+            alert('Edit vehicle functionality - would open edit modal for vehicle ' + index);
+        }
+
+        function deleteVehicle(index) {
+            if (confirm('Are you sure you want to delete this vehicle?')) {
+                vehicles.splice(index, 1);
+                updateVehicleTable();
+                updateVehicleSelects();
+                document.getElementById('totalVehicles').textContent = vehicles.length;
+            }
+        }
+
+        function managePricing(vehicleId) {
+            currentVehicleId = vehicleId;
+            const vehicle = vehicles[vehicleId];
+            const pricing = vehiclePricing[vehicleId];
+            
+            document.getElementById('pricingModalContent').innerHTML = `
+                <h4>${vehicle.make} ${vehicle.model} (${vehicle.year}) - Pricing Management</h4>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Base Daily Rate ($)</label>
+                        <input type="number" id="modalBaseRate" value="${pricing.baseRate}" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Weekend Multiplier</label>
+                        <input type="number" id="modalWeekendMultiplier" value="${pricing.weekendMultiplier}" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Holiday Multiplier</label>
+                        <input type="number" id="modalHolidayMultiplier" value="${pricing.holidayMultiplier}" step="0.1">
+                    </div>
+                </div>
+                <h5 style="margin-top: 20px;">Date Overrides</h5>
+                <div id="dateOverridesList">
+                    ${Object.entries(pricing.dateOverrides).map(([date, price]) => `
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px; align-items: center;">
+                            <input type="date" value="${date}" readonly style="flex: 1;">
+                            <input type="number" value="${price}" step="0.01" style="flex: 1;" onchange="updateDateOverride('${date}', this.value)">
+                            <button class="btn btn-danger btn-sm" onclick="removeDateOverride('${date}')">Remove</button>
+                        </div>
+                    `).join('')}
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <input type="date" id="newOverrideDate" style="flex: 1;">
+                    <input type="number" id="newOverridePrice" placeholder="Price" step="0.01" style="flex: 1;">
+                    <button class="btn btn-primary" onclick="addDateOverride()">Add Override</button>
+                </div>
+            `;
+            
+            document.getElementById('pricingModal').style.display = 'block';
+        }
+
+        function savePricingChanges() {
+            const pricing = vehiclePricing[currentVehicleId];
+            pricing.baseRate = parseFloat(document.getElementById('modalBaseRate').value);
+            pricing.weekendMultiplier = parseFloat(document.getElementById('modalWeekendMultiplier').value);
+            pricing.holidayMultiplier = parseFloat(document.getElementById('modalHolidayMultiplier').value);
+            
+            // Update vehicle base rate
+            vehicles[currentVehicleId].rate = pricing.baseRate;
+            updateVehicleTable();
+            generatePricingCalendar();
+            closeModal('pricingModal');
+        }
+
+        function updateDateOverride(date, price) {
+            vehiclePricing[currentVehicleId].dateOverrides[date] = parseFloat(price);
+        }
+
+        function removeDateOverride(date) {
+            delete vehiclePricing[currentVehicleId].dateOverrides[date];
+            managePricing(currentVehicleId); // Refresh modal
+        }
+
+        function addDateOverride() {
+            const date = document.getElementById('newOverrideDate').value;
+            const price = document.getElementById('newOverridePrice').value;
+            
+            if (date && price) {
+                vehiclePricing[currentVehicleId].dateOverrides[date] = parseFloat(price);
+                document.getElementById('newOverrideDate').value = '';
+                document.getElementById('newOverridePrice').value = '';
+                managePricing(currentVehicleId); // Refresh modal
+            }
+        }
+
+        function generatePricingCalendar() {
+            const calendar = document.getElementById('pricingCalendar');
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // Update month display
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+            document.getElementById('currentMonth').textContent = `${monthNames[month]} ${year}`;
+            
+            // Clear calendar
+            calendar.innerHTML = '';
+            
+            // Add day headers
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day header';
+                dayElement.textContent = day;
+                calendar.appendChild(dayElement);
+            });
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            // Add empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day other-month';
+                calendar.appendChild(dayElement);
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                
+                const date = new Date(year, month, day);
+                const dateString = date.toISOString().split('T')[0];
+                const price = getDayPrice(currentVehicleId, date);
+                
+                dayElement.innerHTML = `
+                    <div>${day}</div>
+                    <div class="day-price">$${price}</div>
+                `;
+                
+                // Add price-based styling
+                const baseRate = vehiclePricing[currentVehicleId].baseRate;
+                if (price > baseRate * 1.3) {
+                    dayElement.classList.add('price-high');
+                } else if (price > baseRate * 1.1) {
+                    dayElement.classList.add('price-medium');
+                } else {
+                    dayElement.classList.add('price-low');
+                }
+                
+                dayElement.onclick = () => editDayPrice(dateString, price);
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        function getDayPrice(vehicleId, date) {
+            const pricing = vehiclePricing[vehicleId];
+            const dateString = date.toISOString().split('T')[0];
+            
+            // Check for date override first
+            if (pricing.dateOverrides[dateString]) {
+                return pricing.dateOverrides[dateString];
+            }
+            
+            // Check if weekend
+            const dayOfWeek = date.getDay();
+            if (dayOfWeek === 0 || dayOfWeek === 6) {
+                return Math.round(pricing.baseRate * pricing.weekendMultiplier);
+            }
+            
+            // Default to base rate
+            return pricing.baseRate;
+        }
+
+        function editDayPrice(dateString, currentPrice) {
+            const newPrice = prompt(`Set price for ${dateString}:`, currentPrice);
+            if (newPrice !== null && !isNaN(newPrice)) {
+                vehiclePricing[currentVehicleId].dateOverrides[dateString] = parseFloat(newPrice);
+                generatePricingCalendar();
+            }
+        }
+
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            generatePricingCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            generatePricingCalendar();
+        }
+
+        function loadVehiclePricing() {
+            currentVehicleId = parseInt(document.getElementById('pricingVehicleSelect').value);
+            generatePricingCalendar();
+        }
+
+        function generateDiscountTiers() {
+            const container = document.getElementById('discountTiers');
+            container.innerHTML = '';
+            
+            durationDiscounts.forEach(tier => {
+                const tierElement = document.createElement('div');
+                tierElement.className = 'discount-tier';
+                tierElement.innerHTML = `
+                    <div class="tier-name">${tier.name}</div>
+                    <div class="tier-duration">${tier.description}</div>
+                    <div class="tier-discount">${tier.discount}% discount</div>
+                `;
+                container.appendChild(tierElement);
+            });
+        }
+
+        function showPricingCalculator() {
+            document.getElementById('calculatorModal').style.display = 'block';
+            calculatePrice();
+        }
+
+        function showDurationDiscounts() {
+            alert('Duration discount management - would open detailed discount configuration');
+        }
+
+        function setDefaultDates() {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            document.getElementById('calcStartDate').value = today.toISOString().split('T')[0];
+            document.getElementById('calcEndDate').value = tomorrow.toISOString().split('T')[0];
+        }
+
+        function calculatePrice() {
+            const vehicleId = parseInt(document.getElementById('calcVehicle').value);
+            const startDate = new Date(document.getElementById('calcStartDate').value);
+            const endDate = new Date(document.getElementById('calcEndDate').value);
+            
+            if (!startDate || !endDate || startDate >= endDate) {
+                document.getElementById('priceBreakdown').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('priceBreakdown').style.display = 'block';
+            
+            const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+            const vehicle = vehicles[vehicleId];
+            const baseRate = vehicle.rate;
+            
+            // Calculate daily rates for each day
+            let totalBase = 0;
+            for (let d = new Date(startDate); d < endDate; d.setDate(d.getDate() + 1)) {
+                totalBase += getDayPrice(vehicleId, d);
+            }
+            
+            // Find applicable discount
+            const discount = durationDiscounts.find(d => 
+                days >= d.minDays && (d.maxDays === null || days <= d.maxDays)
+            );
+            
+            const discountAmount = discount ? (totalBase * discount.discount / 100) : 0;
+            const finalTotal = totalBase - discountAmount;
+            
+            // Update display
+            document.getElementById('rentalDays').textContent = `${days} days`;
+            document.getElementById('baseRate').textContent = `$${baseRate.toFixed(2)}/day`;
+            document.getElementById('subtotal').textContent = `$${totalBase.toFixed(2)}`;
+            document.getElementById('discountAmount').textContent = `-$${discountAmount.toFixed(2)}`;
+            document.getElementById('totalPrice').textContent = `$${finalTotal.toFixed(2)}`;
+            
+            // Show discount info
+            const discountInfo = document.getElementById('discountInfo');
+            if (discount && discount.discount > 0) {
+                discountInfo.style.display = 'block';
+                document.getElementById('discountText').textContent = 
+                    `You save $${discountAmount.toFixed(2)} with our ${discount.name} (${discount.discount}% off)!`;
+            } else {
+                discountInfo.style.display = 'none';
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            updateVehicleSelects();
+        });
+    </script>
+</body>
+</html>
+
