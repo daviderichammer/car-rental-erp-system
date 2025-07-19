@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental ERP - Complete Management System</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+        
+        /* Login Styles */
+        .login-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+        
+        .login-form h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .error, .success {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .error {
+            background: #fee;
+            color: #c33;
+        }
+        
+        .success {
+            background: #efe;
+            color: #363;
+        }
+        
+        /* Dashboard Styles */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e1e8ed;
+            overflow-x: auto;
+        }
+        
+        .nav-tab {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .nav-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .nav-tab:hover {
+            color: #667eea;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Table Styles */
+        .data-table {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        
+        .table-header {
+            padding: 20px;
+            border-bottom: 1px solid #e1e8ed;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-header h2 {
+            color: #333;
+            font-size: 20px;
+        }
+        
+        .add-btn {
+            background: #27ae60;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .add-btn:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #f1f3f4;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .edit-btn {
+            background: #3498db;
+            color: white;
+        }
+        
+        .edit-btn:hover {
+            background: #2980b9;
+        }
+        
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .modal-header h2 {
+            color: #333;
+            font-size: 22px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .modal-form {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+        
+        .modal-form input, .modal-form select, .modal-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .modal-form textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 25px;
+        }
+        
+        .save-btn {
+            background: #27ae60;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .cancel-btn {
+            background: #95a5a6;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .stat-card .change {
+            color: #27ae60;
+            font-size: 14px;
+        }
+        
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="loginSection" class="login-container">
+        <div class="login-form">
+            <h1>🚗 Car Rental ERP</h1>
+            <p style="margin-bottom: 30px; color: #666;">Complete Management System</p>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" value="admin@carrental.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" value="admin123" required>
+                </div>
+                
+                <button type="submit" id="loginBtn" class="login-btn">
+                    🚀 Login to ERP System
+                </button>
+                
+                <div id="loginError" class="error"></div>
+                <div id="loginSuccess" class="success"></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboardSection" class="dashboard">
+        <div class="header">
+            <div class="header-content">
+                <h1>🎯 Car Rental ERP Dashboard</h1>
+                <div class="user-info">
+                    <span id="welcomeUser">Welcome, Admin</span>
+                    <button id="logoutBtn" class="logout-btn">Logout</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <!-- Navigation Tabs -->
+            <div class="nav-tabs">
+                <button class="nav-tab active" data-tab="dashboard">📊 Dashboard</button>
+                <button class="nav-tab" data-tab="vehicles">🚗 Vehicles</button>
+                <button class="nav-tab" data-tab="customers">👥 Customers</button>
+                <button class="nav-tab" data-tab="reservations">📅 Reservations</button>
+                <button class="nav-tab" data-tab="financial">💰 Financial</button>
+                <button class="nav-tab" data-tab="maintenance">🔧 Maintenance</button>
+                <button class="nav-tab" data-tab="reports">📈 Reports</button>
+            </div>
+            
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Total Vehicles</h3>
+                        <div class="value" id="totalVehicles">-</div>
+                        <div class="change">Fleet size</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Active Reservations</h3>
+                        <div class="value" id="activeReservations">-</div>
+                        <div class="change">Current bookings</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Total Customers</h3>
+                        <div class="value" id="totalCustomers">-</div>
+                        <div class="change">Registered users</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Monthly Revenue</h3>
+                        <div class="value" id="monthlyRevenue">-</div>
+                        <div class="change">This month</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vehicles Tab -->
+            <div id="vehicles" class="tab-content">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h2>Vehicle Management</h2>
+                        <button class="add-btn" onclick="openVehicleModal()">+ Add Vehicle</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Make & Model</th>
+                                <th>Year</th>
+                                <th>License Plate</th>
+                                <th>Status</th>
+                                <th>Daily Rate</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vehiclesTable">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px;">
+                                    <div class="loading"></div> Loading vehicles...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Customers Tab -->
+            <div id="customers" class="tab-content">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h2>Customer Management</h2>
+                        <button class="add-btn" onclick="openCustomerModal()">+ Add Customer</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>License Number</th>
+                                <th>Total Rentals</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTable">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px;">
+                                    <div class="loading"></div> Loading customers...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Reservations Tab -->
+            <div id="reservations" class="tab-content">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h2>Reservation Management</h2>
+                        <button class="add-btn" onclick="openReservationModal()">+ New Reservation</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Vehicle</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Status</th>
+                                <th>Total Cost</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservationsTable">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 40px;">
+                                    <div class="loading"></div> Loading reservations...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Financial Tab -->
+            <div id="financial" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Today's Revenue</h3>
+                        <div class="value" id="todayRevenue">$0</div>
+                        <div class="change">Daily earnings</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>This Month</h3>
+                        <div class="value" id="monthRevenue">$0</div>
+                        <div class="change">Monthly total</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Outstanding</h3>
+                        <div class="value" id="outstandingAmount">$0</div>
+                        <div class="change">Pending payments</div>
+                    </div>
+                </div>
+                
+                <div class="data-table">
+                    <div class="table-header">
+                        <h2>Financial Transactions</h2>
+                        <button class="add-btn" onclick="openPaymentModal()">+ Record Payment</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Reservation</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="financialTable">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px;">
+                                    <div class="loading"></div> Loading transactions...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Maintenance Tab -->
+            <div id="maintenance" class="tab-content">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h2>Maintenance Management</h2>
+                        <button class="add-btn" onclick="openMaintenanceModal()">+ Schedule Maintenance</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Vehicle</th>
+                                <th>Type</th>
+                                <th>Scheduled Date</th>
+                                <th>Status</th>
+                                <th>Cost</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="maintenanceTable">
+                            <tr>
+                                <td colspan="6" style="text-align: center; padding: 40px;">
+                                    <div class="loading"></div> Loading maintenance records...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Reports Tab -->
+            <div id="reports" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>Fleet Utilization</h3>
+                        <div class="value">78%</div>
+                        <div class="change">Average usage</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Customer Satisfaction</h3>
+                        <div class="value">4.8</div>
+                        <div class="change">Average rating</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Revenue Growth</h3>
+                        <div class="value">+15%</div>
+                        <div class="change">vs last month</div>
+                    </div>
+                </div>
+                
+                <div class="data-table">
+                    <div class="table-header">
+                        <h2>Business Reports</h2>
+                        <button class="add-btn" onclick="generateReport()">📊 Generate Report</button>
+                    </div>
+                    <div style="padding: 40px; text-align: center; color: #666;">
+                        <h3>📈 Analytics Dashboard</h3>
+                        <p>Comprehensive business reports and analytics will be displayed here.</p>
+                        <p>Click "Generate Report" to create custom reports.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Modal -->
+    <div id="vehicleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="vehicleModalTitle">Add New Vehicle</h2>
+                <button class="close-btn" onclick="closeModal('vehicleModal')">&times;</button>
+            </div>
+            <form id="vehicleForm" class="modal-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Make</label>
+                        <input type="text" name="make" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Model</label>
+                        <input type="text" name="model" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Year</label>
+                        <input type="number" name="year" min="1990" max="2025" required>
+                    </div>
+                    <div class="form-group">
+                        <label>License Plate</label>
+                        <input type="text" name="license_plate" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Daily Rate ($)</label>
+                        <input type="number" name="daily_rate" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status" required>
+                            <option value="available">Available</option>
+                            <option value="rented">Rented</option>
+                            <option value="maintenance">Maintenance</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="description" placeholder="Vehicle description, features, etc."></textarea>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" onclick="closeModal('vehicleModal')">Cancel</button>
+                    <button type="submit" class="save-btn">Save Vehicle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customer Modal -->
+    <div id="customerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="customerModalTitle">Add New Customer</h2>
+                <button class="close-btn" onclick="closeModal('customerModal')">&times;</button>
+            </div>
+            <form id="customerForm" class="modal-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name</label>
+                        <input type="text" name="first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name</label>
+                        <input type="text" name="last_name" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" name="phone" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>License Number</label>
+                        <input type="text" name="license_number" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date of Birth</label>
+                        <input type="date" name="date_of_birth" required>
+                    </div>
+                </div>
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Address</label>
+                        <textarea name="address" placeholder="Full address"></textarea>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" onclick="closeModal('customerModal')">Cancel</button>
+                    <button type="submit" class="save-btn">Save Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reservation Modal -->
+    <div id="reservationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="reservationModalTitle">New Reservation</h2>
+                <button class="close-btn" onclick="closeModal('reservationModal')">&times;</button>
+            </div>
+            <form id="reservationForm" class="modal-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Customer</label>
+                        <select name="customer_id" id="customerSelect" required>
+                            <option value="">Select Customer</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Vehicle</label>
+                        <select name="vehicle_id" id="vehicleSelect" required>
+                            <option value="">Select Vehicle</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="datetime-local" name="start_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="datetime-local" name="end_date" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="status" required>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="pending">Pending</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Total Cost ($)</label>
+                        <input type="number" name="total_cost" step="0.01" min="0" required>
+                    </div>
+                </div>
+                <div class="form-row full">
+                    <div class="form-group">
+                        <label>Notes</label>
+                        <textarea name="notes" placeholder="Additional notes or requirements"></textarea>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" onclick="closeModal('reservationModal')">Cancel</button>
+                    <button type="submit" class="save-btn">Save Reservation</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let authToken = null;
+        let currentUser = null;
+        let currentEditId = null;
+
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('loginError');
+            const successDiv = document.getElementById('loginSuccess');
+            
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<div class="loading"></div> Authenticating...';
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch(`${API_BASE}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'Login failed');
+                }
+                
+                authToken = data.token;
+                currentUser = data.user;
+                
+                successDiv.textContent = '🎉 Login successful! Loading dashboard...';
+                successDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    showDashboard();
+                }, 1500);
+                
+            } catch (error) {
+                errorDiv.textContent = `❌ ${error.message}`;
+                errorDiv.style.display = 'block';
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = '🚀 Login to ERP System';
+            }
+        });
+
+        // Show dashboard
+        function showDashboard() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('dashboardSection').style.display = 'block';
+            
+            if (currentUser) {
+                document.getElementById('welcomeUser').textContent = 
+                    `Welcome, ${currentUser.username || currentUser.email}`;
+            }
+            
+            // Load initial data
+            loadDashboardStats();
+            loadVehicles();
+            loadCustomers();
+            loadReservations();
+        }
+
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            document.getElementById('dashboardSection').style.display = 'none';
+            document.getElementById('loginSection').style.display = 'flex';
+            authToken = null;
+            currentUser = null;
+        });
+
+        // Tab navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
+                
+                // Update active tab
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Show corresponding content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                document.getElementById(tabName).classList.add('active');
+            });
+        });
+
+        // API helper function
+        async function apiCall(endpoint, options = {}) {
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(authToken && { 'Authorization': `Bearer ${authToken}` }),
+                },
+                ...options,
+            };
+            
+            const response = await fetch(`${API_BASE}${endpoint}`, config);
+            
+            if (!response.ok) {
+                const error = await response.json().catch(() => ({ error: 'Network error' }));
+                throw new Error(error.error || `HTTP ${response.status}`);
+            }
+            
+            return response.json();
+        }
+
+        // Load dashboard statistics
+        async function loadDashboardStats() {
+            try {
+                // These would be real API calls in a production system
+                document.getElementById('totalVehicles').textContent = '45';
+                document.getElementById('activeReservations').textContent = '12';
+                document.getElementById('totalCustomers').textContent = '234';
+                document.getElementById('monthlyRevenue').textContent = '$28,450';
+            } catch (error) {
+                console.error('Error loading dashboard stats:', error);
+            }
+        }
+
+        // Load vehicles
+        async function loadVehicles() {
+            try {
+                const vehicles = await apiCall('/api/vehicles');
+                const tbody = document.getElementById('vehiclesTable');
+                
+                if (vehicles.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #666;">No vehicles found. Click "Add Vehicle" to get started.</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = vehicles.map(vehicle => `
+                    <tr>
+                        <td>${vehicle.make} ${vehicle.model}</td>
+                        <td>${vehicle.year}</td>
+                        <td>${vehicle.license_plate}</td>
+                        <td><span class="status-badge status-${vehicle.status}">${vehicle.status}</span></td>
+                        <td>$${vehicle.daily_rate}</td>
+                        <td>
+                            <button class="action-btn edit-btn" onclick="editVehicle('${vehicle.id}')">Edit</button>
+                            <button class="action-btn delete-btn" onclick="deleteVehicle('${vehicle.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading vehicles:', error);
+                document.getElementById('vehiclesTable').innerHTML = 
+                    '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #e74c3c;">Error loading vehicles. Please try again.</td></tr>';
+            }
+        }
+
+        // Load customers
+        async function loadCustomers() {
+            try {
+                const customers = await apiCall('/api/customers');
+                const tbody = document.getElementById('customersTable');
+                
+                if (customers.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #666;">No customers found. Click "Add Customer" to get started.</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = customers.map(customer => `
+                    <tr>
+                        <td>${customer.first_name} ${customer.last_name}</td>
+                        <td>${customer.email}</td>
+                        <td>${customer.phone}</td>
+                        <td>${customer.license_number}</td>
+                        <td>${customer.total_rentals || 0}</td>
+                        <td>
+                            <button class="action-btn edit-btn" onclick="editCustomer('${customer.id}')">Edit</button>
+                            <button class="action-btn delete-btn" onclick="deleteCustomer('${customer.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading customers:', error);
+                document.getElementById('customersTable').innerHTML = 
+                    '<tr><td colspan="6" style="text-align: center; padding: 40px; color: #e74c3c;">Error loading customers. Please try again.</td></tr>';
+            }
+        }
+
+        // Load reservations
+        async function loadReservations() {
+            try {
+                const reservations = await apiCall('/api/reservations');
+                const tbody = document.getElementById('reservationsTable');
+                
+                if (reservations.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: #666;">No reservations found. Click "New Reservation" to get started.</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = reservations.map(reservation => `
+                    <tr>
+                        <td>${reservation.customer_name}</td>
+                        <td>${reservation.vehicle_info}</td>
+                        <td>${new Date(reservation.start_date).toLocaleDateString()}</td>
+                        <td>${new Date(reservation.end_date).toLocaleDateString()}</td>
+                        <td><span class="status-badge status-${reservation.status}">${reservation.status}</span></td>
+                        <td>$${reservation.total_cost}</td>
+                        <td>
+                            <button class="action-btn edit-btn" onclick="editReservation('${reservation.id}')">Edit</button>
+                            <button class="action-btn delete-btn" onclick="deleteReservation('${reservation.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading reservations:', error);
+                document.getElementById('reservationsTable').innerHTML = 
+                    '<tr><td colspan="7" style="text-align: center; padding: 40px; color: #e74c3c;">Error loading reservations. Please try again.</td></tr>';
+            }
+        }
+
+        // Modal functions
+        function openVehicleModal(vehicleId = null) {
+            currentEditId = vehicleId;
+            const modal = document.getElementById('vehicleModal');
+            const title = document.getElementById('vehicleModalTitle');
+            const form = document.getElementById('vehicleForm');
+            
+            if (vehicleId) {
+                title.textContent = 'Edit Vehicle';
+                // Load vehicle data for editing
+                loadVehicleForEdit(vehicleId);
+            } else {
+                title.textContent = 'Add New Vehicle';
+                form.reset();
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function openCustomerModal(customerId = null) {
+            currentEditId = customerId;
+            const modal = document.getElementById('customerModal');
+            const title = document.getElementById('customerModalTitle');
+            const form = document.getElementById('customerForm');
+            
+            if (customerId) {
+                title.textContent = 'Edit Customer';
+                // Load customer data for editing
+                loadCustomerForEdit(customerId);
+            } else {
+                title.textContent = 'Add New Customer';
+                form.reset();
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function openReservationModal(reservationId = null) {
+            currentEditId = reservationId;
+            const modal = document.getElementById('reservationModal');
+            const title = document.getElementById('reservationModalTitle');
+            const form = document.getElementById('reservationForm');
+            
+            // Load customers and vehicles for dropdowns
+            loadCustomersForSelect();
+            loadVehiclesForSelect();
+            
+            if (reservationId) {
+                title.textContent = 'Edit Reservation';
+                // Load reservation data for editing
+                loadReservationForEdit(reservationId);
+            } else {
+                title.textContent = 'New Reservation';
+                form.reset();
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            currentEditId = null;
+        }
+
+        // Form submissions
+        document.getElementById('vehicleForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const vehicleData = Object.fromEntries(formData.entries());
+            
+            try {
+                if (currentEditId) {
+                    await apiCall(`/api/vehicles/${currentEditId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(vehicleData),
+                    });
+                } else {
+                    await apiCall('/api/vehicles', {
+                        method: 'POST',
+                        body: JSON.stringify(vehicleData),
+                    });
+                }
+                
+                closeModal('vehicleModal');
+                loadVehicles();
+                alert('Vehicle saved successfully!');
+            } catch (error) {
+                alert(`Error saving vehicle: ${error.message}`);
+            }
+        });
+
+        document.getElementById('customerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const customerData = Object.fromEntries(formData.entries());
+            
+            try {
+                if (currentEditId) {
+                    await apiCall(`/api/customers/${currentEditId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(customerData),
+                    });
+                } else {
+                    await apiCall('/api/customers', {
+                        method: 'POST',
+                        body: JSON.stringify(customerData),
+                    });
+                }
+                
+                closeModal('customerModal');
+                loadCustomers();
+                alert('Customer saved successfully!');
+            } catch (error) {
+                alert(`Error saving customer: ${error.message}`);
+            }
+        });
+
+        document.getElementById('reservationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const reservationData = Object.fromEntries(formData.entries());
+            
+            try {
+                if (currentEditId) {
+                    await apiCall(`/api/reservations/${currentEditId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(reservationData),
+                    });
+                } else {
+                    await apiCall('/api/reservations', {
+                        method: 'POST',
+                        body: JSON.stringify(reservationData),
+                    });
+                }
+                
+                closeModal('reservationModal');
+                loadReservations();
+                alert('Reservation saved successfully!');
+            } catch (error) {
+                alert(`Error saving reservation: ${error.message}`);
+            }
+        });
+
+        // Delete functions
+        async function deleteVehicle(vehicleId) {
+            if (!confirm('Are you sure you want to delete this vehicle?')) return;
+            
+            try {
+                await apiCall(`/api/vehicles/${vehicleId}`, { method: 'DELETE' });
+                loadVehicles();
+                alert('Vehicle deleted successfully!');
+            } catch (error) {
+                alert(`Error deleting vehicle: ${error.message}`);
+            }
+        }
+
+        async function deleteCustomer(customerId) {
+            if (!confirm('Are you sure you want to delete this customer?')) return;
+            
+            try {
+                await apiCall(`/api/customers/${customerId}`, { method: 'DELETE' });
+                loadCustomers();
+                alert('Customer deleted successfully!');
+            } catch (error) {
+                alert(`Error deleting customer: ${error.message}`);
+            }
+        }
+
+        async function deleteReservation(reservationId) {
+            if (!confirm('Are you sure you want to delete this reservation?')) return;
+            
+            try {
+                await apiCall(`/api/reservations/${reservationId}`, { method: 'DELETE' });
+                loadReservations();
+                alert('Reservation deleted successfully!');
+            } catch (error) {
+                alert(`Error deleting reservation: ${error.message}`);
+            }
+        }
+
+        // Edit functions (placeholder - would load actual data in production)
+        function editVehicle(vehicleId) {
+            openVehicleModal(vehicleId);
+        }
+
+        function editCustomer(customerId) {
+            openCustomerModal(customerId);
+        }
+
+        function editReservation(reservationId) {
+            openReservationModal(reservationId);
+        }
+
+        // Helper functions for loading data into forms
+        async function loadVehicleForEdit(vehicleId) {
+            try {
+                const vehicle = await apiCall(`/api/vehicles/${vehicleId}`);
+                const form = document.getElementById('vehicleForm');
+                
+                Object.keys(vehicle).forEach(key => {
+                    const input = form.querySelector(`[name="${key}"]`);
+                    if (input) input.value = vehicle[key];
+                });
+            } catch (error) {
+                console.error('Error loading vehicle for edit:', error);
+            }
+        }
+
+        async function loadCustomerForEdit(customerId) {
+            try {
+                const customer = await apiCall(`/api/customers/${customerId}`);
+                const form = document.getElementById('customerForm');
+                
+                Object.keys(customer).forEach(key => {
+                    const input = form.querySelector(`[name="${key}"]`);
+                    if (input) input.value = customer[key];
+                });
+            } catch (error) {
+                console.error('Error loading customer for edit:', error);
+            }
+        }
+
+        async function loadReservationForEdit(reservationId) {
+            try {
+                const reservation = await apiCall(`/api/reservations/${reservationId}`);
+                const form = document.getElementById('reservationForm');
+                
+                Object.keys(reservation).forEach(key => {
+                    const input = form.querySelector(`[name="${key}"]`);
+                    if (input) input.value = reservation[key];
+                });
+            } catch (error) {
+                console.error('Error loading reservation for edit:', error);
+            }
+        }
+
+        async function loadCustomersForSelect() {
+            try {
+                const customers = await apiCall('/api/customers');
+                const select = document.getElementById('customerSelect');
+                
+                select.innerHTML = '<option value="">Select Customer</option>' +
+                    customers.map(customer => 
+                        `<option value="${customer.id}">${customer.first_name} ${customer.last_name}</option>`
+                    ).join('');
+            } catch (error) {
+                console.error('Error loading customers for select:', error);
+            }
+        }
+
+        async function loadVehiclesForSelect() {
+            try {
+                const vehicles = await apiCall('/api/vehicles');
+                const select = document.getElementById('vehicleSelect');
+                
+                select.innerHTML = '<option value="">Select Vehicle</option>' +
+                    vehicles.filter(vehicle => vehicle.status === 'available').map(vehicle => 
+                        `<option value="${vehicle.id}">${vehicle.make} ${vehicle.model} (${vehicle.license_plate})</option>`
+                    ).join('');
+            } catch (error) {
+                console.error('Error loading vehicles for select:', error);
+            }
+        }
+
+        // Placeholder functions for other features
+        function openPaymentModal() {
+            alert('Payment recording feature coming soon!');
+        }
+
+        function openMaintenanceModal() {
+            alert('Maintenance scheduling feature coming soon!');
+        }
+
+        function generateReport() {
+            alert('Report generation feature coming soon!');
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+                currentEditId = null;
+            }
+        });
+    </script>
+</body>
+</html>
+
