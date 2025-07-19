@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental ERP Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-form {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-form h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+            background: #f8f9fa;
+        }
+
+        .header {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 70px;
+            width: 250px;
+            height: calc(100vh - 70px);
+            background: white;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin: 5px 0;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 15px 30px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .section {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: #333;
+            font-size: 20px;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .pricing-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin: 20px 0;
+        }
+
+        .calendar-header {
+            background: #667eea;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .calendar-day {
+            background: #f8f9fa;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .calendar-day:hover {
+            background: #e9ecef;
+        }
+
+        .calendar-day.weekend {
+            background: #fff3cd;
+        }
+
+        .calendar-day.selected {
+            background: #667eea;
+            color: white;
+        }
+
+        .pricing-controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .discount-tier {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #667eea;
+        }
+
+        .discount-tier h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .discount-tier p {
+            color: #666;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Form -->
+    <div id="loginContainer" class="login-container">
+        <form class="login-form" id="loginForm">
+            <h2>🚗 Car Rental ERP</h2>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" value="admin@carrental.com" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" value="admin123" required>
+            </div>
+            <button type="submit" class="btn">🚀 Login to ERP System</button>
+        </form>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <!-- Header -->
+        <header class="header">
+            <h1>Car Rental ERP Dashboard</h1>
+            <div class="user-info">
+                <span>Welcome, <span id="userName">System Administrator</span></span>
+                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <ul>
+                <li><a href="#" onclick="showSection('dashboard')" class="active">📊 Dashboard</a></li>
+                <li><a href="#" onclick="showSection('vehicles')">🚗 Vehicles</a></li>
+                <li><a href="#" onclick="showSection('customers')">👥 Customers</a></li>
+                <li><a href="#" onclick="showSection('reservations')">📅 Reservations</a></li>
+                <li><a href="#" onclick="showSection('financial')">💰 Financial</a></li>
+                <li><a href="#" onclick="showSection('maintenance')">🔧 Maintenance</a></li>
+                <li><a href="#" onclick="showSection('pricing')">💲 Dynamic Pricing</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboardSection" class="section active">
+                <h2>Dashboard Overview</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="totalVehicles">3</h3>
+                        <p>Total Vehicles</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="activeReservations">2</h3>
+                        <p>Active Reservations</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="totalCustomers">4</h3>
+                        <p>Total Customers</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="monthlyRevenue">$2,450</h3>
+                        <p>Monthly Revenue</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Vehicles Section -->
+            <section id="vehiclesSection" class="section">
+                <h2>Vehicle Management</h2>
+                <button class="btn" onclick="openAddVehicleModal()">Add Vehicle</button>
+                <div class="table-container">
+                    <table id="vehiclesTable">
+                        <thead>
+                            <tr>
+                                <th>Make & Model</th>
+                                <th>Year</th>
+                                <th>License Plate</th>
+                                <th>Status</th>
+                                <th>Daily Rate</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vehiclesTableBody">
+                            <!-- Vehicle data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Customers Section -->
+            <section id="customersSection" class="section">
+                <h2>Customer Management</h2>
+                <button class="btn" onclick="openAddCustomerModal()">Add Customer</button>
+                <div class="table-container">
+                    <table id="customersTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>License Number</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customersTableBody">
+                            <!-- Customer data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Reservations Section -->
+            <section id="reservationsSection" class="section">
+                <h2>Reservation Management</h2>
+                <button class="btn" onclick="openNewReservationModal()">New Reservation</button>
+                <div class="table-container">
+                    <table id="reservationsTable">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Vehicle</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Total Cost</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reservationsTableBody">
+                            <!-- Reservation data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Financial Section -->
+            <section id="financialSection" class="section">
+                <h2>Financial Management</h2>
+                <button class="btn" onclick="openAddTransactionModal()">Add Transaction</button>
+                <div class="table-container">
+                    <table id="transactionsTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody">
+                            <!-- Transaction data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Maintenance Section -->
+            <section id="maintenanceSection" class="section">
+                <h2>Maintenance Management</h2>
+                <button class="btn" onclick="openScheduleMaintenanceModal()">Schedule Maintenance</button>
+                <div class="table-container">
+                    <table id="maintenanceTable">
+                        <thead>
+                            <tr>
+                                <th>Vehicle</th>
+                                <th>Service Type</th>
+                                <th>Scheduled Date</th>
+                                <th>Cost</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="maintenanceTableBody">
+                            <!-- Maintenance data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Dynamic Pricing Section -->
+            <section id="pricingSection" class="section">
+                <h2>Dynamic Pricing Management</h2>
+                <div class="pricing-controls">
+                    <button class="btn" onclick="openDurationDiscountsModal()">Duration Discounts</button>
+                    <button class="btn" onclick="openPricingCalculatorModal()">Pricing Calculator</button>
+                    <button class="btn" onclick="openCalendarPricingModal()">Calendar Pricing</button>
+                </div>
+                
+                <h3>Current Duration Discount Tiers</h3>
+                <div id="discountTiers">
+                    <div class="discount-tier">
+                        <h4>3-6 Day Discount</h4>
+                        <p>5% discount for rentals 3-6 days</p>
+                    </div>
+                    <div class="discount-tier">
+                        <h4>Weekly Discount</h4>
+                        <p>15% discount for rentals 7-13 days</p>
+                    </div>
+                    <div class="discount-tier">
+                        <h4>Bi-Weekly Discount</h4>
+                        <p>25% discount for rentals 14-20 days</p>
+                    </div>
+                    <div class="discount-tier">
+                        <h4>Monthly Discount</h4>
+                        <p>35% discount for rentals 21-59 days</p>
+                    </div>
+                    <div class="discount-tier">
+                        <h4>Extended Discount</h4>
+                        <p>45% discount for rentals 60+ days</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add Vehicle Modal -->
+    <div id="addVehicleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Vehicle</h3>
+                <span class="close" onclick="closeModal('addVehicleModal')">&times;</span>
+            </div>
+            <form id="addVehicleForm">
+                <div class="form-group">
+                    <label for="vehicleMake">Make:</label>
+                    <input type="text" id="vehicleMake" required>
+                </div>
+                <div class="form-group">
+                    <label for="vehicleModel">Model:</label>
+                    <input type="text" id="vehicleModel" required>
+                </div>
+                <div class="form-group">
+                    <label for="vehicleYear">Year:</label>
+                    <input type="number" id="vehicleYear" min="1990" max="2025" required>
+                </div>
+                <div class="form-group">
+                    <label for="vehicleLicense">License Plate:</label>
+                    <input type="text" id="vehicleLicense" required>
+                </div>
+                <div class="form-group">
+                    <label for="vehicleRate">Daily Rate ($):</label>
+                    <input type="number" id="vehicleRate" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="vehicleStatus">Status:</label>
+                    <select id="vehicleStatus" required>
+                        <option value="Available">Available</option>
+                        <option value="Rented">Rented</option>
+                        <option value="Maintenance">Maintenance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="vehicleDescription">Description:</label>
+                    <textarea id="vehicleDescription" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Save Vehicle</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('addVehicleModal')">Cancel</button>
+            </form>
+            <div id="vehicleSuccessMessage" class="success-message"></div>
+        </div>
+    </div>
+
+    <!-- Add Customer Modal -->
+    <div id="addCustomerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Customer</h3>
+                <span class="close" onclick="closeModal('addCustomerModal')">&times;</span>
+            </div>
+            <form id="addCustomerForm">
+                <div class="form-group">
+                    <label for="customerFirstName">First Name:</label>
+                    <input type="text" id="customerFirstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerLastName">Last Name:</label>
+                    <input type="text" id="customerLastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerEmail">Email:</label>
+                    <input type="email" id="customerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerPhone">Phone:</label>
+                    <input type="tel" id="customerPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerLicense">License Number:</label>
+                    <input type="text" id="customerLicense" required>
+                </div>
+                <div class="form-group">
+                    <label for="customerAddress">Address:</label>
+                    <textarea id="customerAddress" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Save Customer</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('addCustomerModal')">Cancel</button>
+            </form>
+            <div id="customerSuccessMessage" class="success-message"></div>
+        </div>
+    </div>
+
+    <!-- New Reservation Modal -->
+    <div id="newReservationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>New Reservation</h3>
+                <span class="close" onclick="closeModal('newReservationModal')">&times;</span>
+            </div>
+            <form id="newReservationForm">
+                <div class="form-group">
+                    <label for="reservationCustomer">Customer:</label>
+                    <select id="reservationCustomer" required>
+                        <option value="">Select Customer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reservationVehicle">Vehicle:</label>
+                    <select id="reservationVehicle" required>
+                        <option value="">Select Vehicle</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reservationStartDate">Start Date:</label>
+                    <input type="date" id="reservationStartDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="reservationEndDate">End Date:</label>
+                    <input type="date" id="reservationEndDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="reservationNotes">Notes:</label>
+                    <textarea id="reservationNotes" rows="3"></textarea>
+                </div>
+                <div id="reservationPricing" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <h4>Pricing Calculation</h4>
+                    <p>Days: <span id="reservationDays">0</span></p>
+                    <p>Daily Rate: $<span id="reservationDailyRate">0.00</span></p>
+                    <p>Subtotal: $<span id="reservationSubtotal">0.00</span></p>
+                    <p>Discount: <span id="reservationDiscount">0%</span></p>
+                    <p><strong>Total: $<span id="reservationTotal">0.00</span></strong></p>
+                </div>
+                <button type="submit" class="btn btn-success">Create Reservation</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('newReservationModal')">Cancel</button>
+            </form>
+            <div id="reservationSuccessMessage" class="success-message"></div>
+        </div>
+    </div>
+
+    <!-- Add Transaction Modal -->
+    <div id="addTransactionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Transaction</h3>
+                <span class="close" onclick="closeModal('addTransactionModal')">&times;</span>
+            </div>
+            <form id="addTransactionForm">
+                <div class="form-group">
+                    <label for="transactionCustomer">Customer:</label>
+                    <select id="transactionCustomer" required>
+                        <option value="">Select Customer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="transactionType">Transaction Type:</label>
+                    <select id="transactionType" required>
+                        <option value="">Select Type</option>
+                        <option value="Payment">Payment</option>
+                        <option value="Refund">Refund</option>
+                        <option value="Deposit">Deposit</option>
+                        <option value="Fee">Fee</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="transactionAmount">Amount ($):</label>
+                    <input type="number" id="transactionAmount" min="0" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="transactionDate">Date:</label>
+                    <input type="date" id="transactionDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="transactionDescription">Description:</label>
+                    <textarea id="transactionDescription" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Save Transaction</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('addTransactionModal')">Cancel</button>
+            </form>
+            <div id="transactionSuccessMessage" class="success-message"></div>
+        </div>
+    </div>
+
+    <!-- Schedule Maintenance Modal -->
+    <div id="scheduleMaintenanceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Schedule Maintenance</h3>
+                <span class="close" onclick="closeModal('scheduleMaintenanceModal')">&times;</span>
+            </div>
+            <form id="scheduleMaintenanceForm">
+                <div class="form-group">
+                    <label for="maintenanceVehicle">Vehicle:</label>
+                    <select id="maintenanceVehicle" required>
+                        <option value="">Select Vehicle</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="maintenanceType">Service Type:</label>
+                    <select id="maintenanceType" required>
+                        <option value="">Select Service</option>
+                        <option value="Oil Change">Oil Change</option>
+                        <option value="Tire Rotation">Tire Rotation</option>
+                        <option value="Brake Service">Brake Service</option>
+                        <option value="Engine Service">Engine Service</option>
+                        <option value="Transmission Service">Transmission Service</option>
+                        <option value="General Inspection">General Inspection</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="maintenanceDate">Scheduled Date:</label>
+                    <input type="date" id="maintenanceDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="maintenanceCost">Estimated Cost ($):</label>
+                    <input type="number" id="maintenanceCost" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label for="maintenanceNotes">Notes:</label>
+                    <textarea id="maintenanceNotes" rows="3"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Schedule Maintenance</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('scheduleMaintenanceModal')">Cancel</button>
+            </form>
+            <div id="maintenanceSuccessMessage" class="success-message"></div>
+        </div>
+    </div>
+
+    <!-- Duration Discounts Modal -->
+    <div id="durationDiscountsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Configure Duration Discounts</h3>
+                <span class="close" onclick="closeModal('durationDiscountsModal')">&times;</span>
+            </div>
+            <form id="durationDiscountsForm">
+                <div class="form-group">
+                    <label for="discount3to6">3-6 Day Discount (%):</label>
+                    <input type="number" id="discount3to6" min="0" max="100" step="0.1" value="5">
+                </div>
+                <div class="form-group">
+                    <label for="discountWeekly">Weekly Discount (7-13 days) (%):</label>
+                    <input type="number" id="discountWeekly" min="0" max="100" step="0.1" value="15">
+                </div>
+                <div class="form-group">
+                    <label for="discountBiWeekly">Bi-Weekly Discount (14-20 days) (%):</label>
+                    <input type="number" id="discountBiWeekly" min="0" max="100" step="0.1" value="25">
+                </div>
+                <div class="form-group">
+                    <label for="discountMonthly">Monthly Discount (21-59 days) (%):</label>
+                    <input type="number" id="discountMonthly" min="0" max="100" step="0.1" value="35">
+                </div>
+                <div class="form-group">
+                    <label for="discountExtended">Extended Discount (60+ days) (%):</label>
+                    <input type="number" id="discountExtended" min="0" max="100" step="0.1" value="45">
+                </div>
+                <button type="submit" class="btn btn-success">Save Discounts</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('durationDiscountsModal')">Cancel</button>
+            </form>
+            <div id="discountSuccessMessage" class="success-message"></div>
+        </div>
+    </div>
+
+    <!-- Pricing Calculator Modal -->
+    <div id="pricingCalculatorModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Pricing Calculator</h3>
+                <span class="close" onclick="closeModal('pricingCalculatorModal')">&times;</span>
+            </div>
+            <form id="pricingCalculatorForm">
+                <div class="form-group">
+                    <label for="calcVehicle">Vehicle:</label>
+                    <select id="calcVehicle" required>
+                        <option value="">Select Vehicle</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="calcStartDate">Start Date:</label>
+                    <input type="date" id="calcStartDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="calcEndDate">End Date:</label>
+                    <input type="date" id="calcEndDate" required>
+                </div>
+                <div id="calculatorResults" style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <h4>Pricing Breakdown</h4>
+                    <p>Rental Days: <span id="calcDays">0</span></p>
+                    <p>Daily Rate: $<span id="calcDailyRate">0.00</span></p>
+                    <p>Subtotal: $<span id="calcSubtotal">0.00</span></p>
+                    <p>Duration Discount: <span id="calcDiscountPercent">0%</span> (-$<span id="calcDiscountAmount">0.00</span>)</p>
+                    <p><strong>Total Price: $<span id="calcTotal">0.00</span></strong></p>
+                    <p id="calcSavingsMessage" style="color: #28a745; font-weight: bold;"></p>
+                </div>
+                <button type="button" class="btn" onclick="calculatePricing()">Calculate Pricing</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('pricingCalculatorModal')">Close</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Calendar Pricing Modal -->
+    <div id="calendarPricingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Calendar Pricing Management</h3>
+                <span class="close" onclick="closeModal('calendarPricingModal')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label for="calendarVehicle">Vehicle:</label>
+                <select id="calendarVehicle">
+                    <option value="">Select Vehicle</option>
+                </select>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
+                <button type="button" class="btn" onclick="previousMonth()">← Previous</button>
+                <h4 id="calendarMonth">July 2025</h4>
+                <button type="button" class="btn" onclick="nextMonth()">Next →</button>
+            </div>
+            <div class="pricing-calendar" id="pricingCalendar">
+                <!-- Calendar will be generated here -->
+            </div>
+            <div class="form-group" style="margin-top: 20px;">
+                <label for="selectedDatePrice">Price for Selected Date ($):</label>
+                <input type="number" id="selectedDatePrice" min="0" step="0.01">
+                <button type="button" class="btn" onclick="updateDatePrice()">Update Price</button>
+            </div>
+            <button type="button" class="btn btn-secondary" onclick="closeModal('calendarPricingModal')">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Global data storage
+        let vehicles = [
+            { id: 1, make: 'Tesla', model: 'Model 3', year: 2021, license: 'A75RAW', rate: 60, status: 'Available', description: 'Electric sedan with autopilot' },
+            { id: 2, make: 'BMW', model: 'X5', year: 2020, license: 'B23XYZ', rate: 85, status: 'Rented', description: 'Luxury SUV with premium features' },
+            { id: 3, make: 'Honda', model: 'Civic', year: 2022, license: 'H123ABC', rate: 45, status: 'Available', description: 'Compact car, fuel efficient' }
+        ];
+
+        let customers = [
+            { id: 1, firstName: 'John', lastName: 'Doe', email: 'john.doe@email.com', phone: '555-0123', license: 'D123456789', address: '123 Main St, City, State' },
+            { id: 2, firstName: 'Jane', lastName: 'Smith', email: 'jane.smith@email.com', phone: '555-0456', license: 'D987654321', address: '456 Oak Ave, City, State' },
+            { id: 3, firstName: 'Mike', lastName: 'Johnson', email: 'mike.j@email.com', phone: '555-0789', license: 'D456789123', address: '789 Pine St, City, State' },
+            { id: 4, firstName: 'Sarah', lastName: 'Wilson', email: 'sarah.w@email.com', phone: '555-0321', license: 'D321654987', address: '321 Elm St, City, State' }
+        ];
+
+        let reservations = [
+            { id: 1, customerId: 1, vehicleId: 2, startDate: '2025-07-20', endDate: '2025-07-25', totalCost: 425, status: 'Active', notes: 'Business trip rental' },
+            { id: 2, customerId: 3, vehicleId: 1, startDate: '2025-07-22', endDate: '2025-07-28', totalCost: 306, status: 'Confirmed', notes: 'Vacation rental with 15% weekly discount' }
+        ];
+
+        let transactions = [
+            { id: 1, customerId: 1, type: 'Payment', amount: 425, date: '2025-07-20', status: 'Completed', description: 'BMW X5 rental payment' },
+            { id: 2, customerId: 3, type: 'Deposit', amount: 100, date: '2025-07-22', status: 'Completed', description: 'Security deposit for Tesla Model 3' }
+        ];
+
+        let maintenance = [
+            { id: 1, vehicleId: 3, serviceType: 'Oil Change', scheduledDate: '2025-08-01', cost: 75, status: 'Scheduled', notes: 'Regular maintenance' }
+        ];
+
+        let durationDiscounts = {
+            '3to6': 5,
+            'weekly': 15,
+            'biweekly': 25,
+            'monthly': 35,
+            'extended': 45
+        };
+
+        let currentCalendarMonth = 6; // July (0-based)
+        let currentCalendarYear = 2025;
+        let selectedCalendarDate = null;
+
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (email === 'admin@carrental.com' && password === 'admin123') {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                loadDashboardData();
+            } else {
+                alert('Invalid credentials');
+            }
+        });
+
+        // Logout functionality
+        function logout() {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('email').value = 'admin@carrental.com';
+            document.getElementById('password').value = 'admin123';
+        }
+
+        // Navigation functionality
+        function showSection(sectionName) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Remove active class from all nav links
+            const navLinks = document.querySelectorAll('.sidebar a');
+            navLinks.forEach(link => link.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(sectionName + 'Section').classList.add('active');
+            
+            // Add active class to clicked nav link
+            event.target.classList.add('active');
+            
+            // Load section-specific data
+            if (sectionName === 'vehicles') loadVehiclesData();
+            else if (sectionName === 'customers') loadCustomersData();
+            else if (sectionName === 'reservations') loadReservationsData();
+            else if (sectionName === 'financial') loadFinancialData();
+            else if (sectionName === 'maintenance') loadMaintenanceData();
+        }
+
+        // Load dashboard data
+        function loadDashboardData() {
+            document.getElementById('totalVehicles').textContent = vehicles.length;
+            document.getElementById('activeReservations').textContent = reservations.filter(r => r.status === 'Active').length;
+            document.getElementById('totalCustomers').textContent = customers.length;
+            
+            const totalRevenue = transactions.filter(t => t.type === 'Payment' && t.status === 'Completed')
+                .reduce((sum, t) => sum + t.amount, 0);
+            document.getElementById('monthlyRevenue').textContent = '$' + totalRevenue.toLocaleString();
+        }
+
+        // Load vehicles data
+        function loadVehiclesData() {
+            const tbody = document.getElementById('vehiclesTableBody');
+            tbody.innerHTML = '';
+            
+            vehicles.forEach(vehicle => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${vehicle.make} ${vehicle.model}</td>
+                    <td>${vehicle.year}</td>
+                    <td>${vehicle.license}</td>
+                    <td><span class="status-${vehicle.status.toLowerCase()}">${vehicle.status}</span></td>
+                    <td>$${vehicle.rate}</td>
+                    <td>
+                        <button class="btn btn-warning" onclick="editVehicle(${vehicle.id})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteVehicle(${vehicle.id})">Delete</button>
+                    </td>
+                `;
+            });
+        }
+
+        // Load customers data
+        function loadCustomersData() {
+            const tbody = document.getElementById('customersTableBody');
+            tbody.innerHTML = '';
+            
+            customers.forEach(customer => {
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${customer.firstName} ${customer.lastName}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.phone}</td>
+                    <td>${customer.license}</td>
+                    <td>
+                        <button class="btn btn-warning" onclick="editCustomer(${customer.id})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteCustomer(${customer.id})">Delete</button>
+                    </td>
+                `;
+            });
+        }
+
+        // Load reservations data
+        function loadReservationsData() {
+            const tbody = document.getElementById('reservationsTableBody');
+            tbody.innerHTML = '';
+            
+            reservations.forEach(reservation => {
+                const customer = customers.find(c => c.id === reservation.customerId);
+                const vehicle = vehicles.find(v => v.id === reservation.vehicleId);
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${customer ? customer.firstName + ' ' + customer.lastName : 'Unknown'}</td>
+                    <td>${vehicle ? vehicle.make + ' ' + vehicle.model : 'Unknown'}</td>
+                    <td>${reservation.startDate}</td>
+                    <td>${reservation.endDate}</td>
+                    <td>$${reservation.totalCost}</td>
+                    <td>${reservation.status}</td>
+                    <td>
+                        <button class="btn btn-warning" onclick="editReservation(${reservation.id})">Edit</button>
+                        <button class="btn btn-danger" onclick="cancelReservation(${reservation.id})">Cancel</button>
+                    </td>
+                `;
+            });
+        }
+
+        // Load financial data
+        function loadFinancialData() {
+            const tbody = document.getElementById('transactionsTableBody');
+            tbody.innerHTML = '';
+            
+            transactions.forEach(transaction => {
+                const customer = customers.find(c => c.id === transaction.customerId);
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${transaction.date}</td>
+                    <td>${customer ? customer.firstName + ' ' + customer.lastName : 'Unknown'}</td>
+                    <td>${transaction.type}</td>
+                    <td>$${transaction.amount}</td>
+                    <td>${transaction.status}</td>
+                    <td>
+                        <button class="btn btn-warning" onclick="editTransaction(${transaction.id})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteTransaction(${transaction.id})">Delete</button>
+                    </td>
+                `;
+            });
+        }
+
+        // Load maintenance data
+        function loadMaintenanceData() {
+            const tbody = document.getElementById('maintenanceTableBody');
+            tbody.innerHTML = '';
+            
+            maintenance.forEach(item => {
+                const vehicle = vehicles.find(v => v.id === item.vehicleId);
+                const row = tbody.insertRow();
+                row.innerHTML = `
+                    <td>${vehicle ? vehicle.make + ' ' + vehicle.model + ' (' + vehicle.license + ')' : 'Unknown'}</td>
+                    <td>${item.serviceType}</td>
+                    <td>${item.scheduledDate}</td>
+                    <td>$${item.cost}</td>
+                    <td>${item.status}</td>
+                    <td>
+                        <button class="btn btn-warning" onclick="editMaintenance(${item.id})">Edit</button>
+                        <button class="btn btn-danger" onclick="deleteMaintenance(${item.id})">Delete</button>
+                    </td>
+                `;
+            });
+        }
+
+        // Modal functions
+        function openAddVehicleModal() {
+            document.getElementById('addVehicleModal').style.display = 'block';
+        }
+
+        function openAddCustomerModal() {
+            document.getElementById('addCustomerModal').style.display = 'block';
+        }
+
+        function openNewReservationModal() {
+            populateCustomerDropdown('reservationCustomer');
+            populateVehicleDropdown('reservationVehicle');
+            document.getElementById('newReservationModal').style.display = 'block';
+        }
+
+        function openAddTransactionModal() {
+            populateCustomerDropdown('transactionCustomer');
+            document.getElementById('transactionDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('addTransactionModal').style.display = 'block';
+        }
+
+        function openScheduleMaintenanceModal() {
+            populateVehicleDropdown('maintenanceVehicle');
+            document.getElementById('scheduleMaintenanceModal').style.display = 'block';
+        }
+
+        function openDurationDiscountsModal() {
+            document.getElementById('discount3to6').value = durationDiscounts['3to6'];
+            document.getElementById('discountWeekly').value = durationDiscounts.weekly;
+            document.getElementById('discountBiWeekly').value = durationDiscounts.biweekly;
+            document.getElementById('discountMonthly').value = durationDiscounts.monthly;
+            document.getElementById('discountExtended').value = durationDiscounts.extended;
+            document.getElementById('durationDiscountsModal').style.display = 'block';
+        }
+
+        function openPricingCalculatorModal() {
+            populateVehicleDropdown('calcVehicle');
+            document.getElementById('calcStartDate').value = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('calcEndDate').value = tomorrow.toISOString().split('T')[0];
+            document.getElementById('pricingCalculatorModal').style.display = 'block';
+        }
+
+        function openCalendarPricingModal() {
+            populateVehicleDropdown('calendarVehicle');
+            generateCalendar();
+            document.getElementById('calendarPricingModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Helper functions
+        function populateCustomerDropdown(selectId) {
+            const select = document.getElementById(selectId);
+            select.innerHTML = '<option value="">Select Customer</option>';
+            customers.forEach(customer => {
+                const option = document.createElement('option');
+                option.value = customer.id;
+                option.textContent = `${customer.firstName} ${customer.lastName}`;
+                select.appendChild(option);
+            });
+        }
+
+        function populateVehicleDropdown(selectId) {
+            const select = document.getElementById(selectId);
+            select.innerHTML = '<option value="">Select Vehicle</option>';
+            vehicles.forEach(vehicle => {
+                const option = document.createElement('option');
+                option.value = vehicle.id;
+                option.textContent = `${vehicle.make} ${vehicle.model} (${vehicle.license})`;
+                select.appendChild(option);
+            });
+        }
+
+        function calculateDurationDiscount(days) {
+            if (days >= 60) return durationDiscounts.extended;
+            if (days >= 21) return durationDiscounts.monthly;
+            if (days >= 14) return durationDiscounts.biweekly;
+            if (days >= 7) return durationDiscounts.weekly;
+            if (days >= 3) return durationDiscounts['3to6'];
+            return 0;
+        }
+
+        function getDiscountName(days) {
+            if (days >= 60) return 'Extended Discount';
+            if (days >= 21) return 'Monthly Discount';
+            if (days >= 14) return 'Bi-Weekly Discount';
+            if (days >= 7) return 'Weekly Discount';
+            if (days >= 3) return '3-6 Day Discount';
+            return 'No Discount';
+        }
+
+        // Form submissions
+        document.getElementById('addVehicleForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newVehicle = {
+                id: vehicles.length + 1,
+                make: document.getElementById('vehicleMake').value,
+                model: document.getElementById('vehicleModel').value,
+                year: parseInt(document.getElementById('vehicleYear').value),
+                license: document.getElementById('vehicleLicense').value,
+                rate: parseFloat(document.getElementById('vehicleRate').value),
+                status: document.getElementById('vehicleStatus').value,
+                description: document.getElementById('vehicleDescription').value
+            };
+            
+            vehicles.push(newVehicle);
+            loadVehiclesData();
+            loadDashboardData();
+            
+            document.getElementById('vehicleSuccessMessage').textContent = 'Vehicle added successfully!';
+            document.getElementById('vehicleSuccessMessage').style.display = 'block';
+            
+            setTimeout(() => {
+                closeModal('addVehicleModal');
+                document.getElementById('addVehicleForm').reset();
+                document.getElementById('vehicleSuccessMessage').style.display = 'none';
+            }, 2000);
+        });
+
+        document.getElementById('addCustomerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newCustomer = {
+                id: customers.length + 1,
+                firstName: document.getElementById('customerFirstName').value,
+                lastName: document.getElementById('customerLastName').value,
+                email: document.getElementById('customerEmail').value,
+                phone: document.getElementById('customerPhone').value,
+                license: document.getElementById('customerLicense').value,
+                address: document.getElementById('customerAddress').value
+            };
+            
+            customers.push(newCustomer);
+            loadCustomersData();
+            loadDashboardData();
+            
+            document.getElementById('customerSuccessMessage').textContent = 'Customer added successfully!';
+            document.getElementById('customerSuccessMessage').style.display = 'block';
+            
+            setTimeout(() => {
+                closeModal('addCustomerModal');
+                document.getElementById('addCustomerForm').reset();
+                document.getElementById('customerSuccessMessage').style.display = 'none';
+            }, 2000);
+        });
+
+        document.getElementById('newReservationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const customerId = parseInt(document.getElementById('reservationCustomer').value);
+            const vehicleId = parseInt(document.getElementById('reservationVehicle').value);
+            const startDate = document.getElementById('reservationStartDate').value;
+            const endDate = document.getElementById('reservationEndDate').value;
+            
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            
+            const vehicle = vehicles.find(v => v.id === vehicleId);
+            const subtotal = days * vehicle.rate;
+            const discountPercent = calculateDurationDiscount(days);
+            const discountAmount = subtotal * (discountPercent / 100);
+            const totalCost = subtotal - discountAmount;
+            
+            const newReservation = {
+                id: reservations.length + 1,
+                customerId: customerId,
+                vehicleId: vehicleId,
+                startDate: startDate,
+                endDate: endDate,
+                totalCost: totalCost,
+                status: 'Confirmed',
+                notes: document.getElementById('reservationNotes').value
+            };
+            
+            reservations.push(newReservation);
+            loadReservationsData();
+            loadDashboardData();
+            
+            document.getElementById('reservationSuccessMessage').textContent = 'Reservation created successfully!';
+            document.getElementById('reservationSuccessMessage').style.display = 'block';
+            
+            setTimeout(() => {
+                closeModal('newReservationModal');
+                document.getElementById('newReservationForm').reset();
+                document.getElementById('reservationSuccessMessage').style.display = 'none';
+            }, 2000);
+        });
+
+        document.getElementById('addTransactionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newTransaction = {
+                id: transactions.length + 1,
+                customerId: parseInt(document.getElementById('transactionCustomer').value),
+                type: document.getElementById('transactionType').value,
+                amount: parseFloat(document.getElementById('transactionAmount').value),
+                date: document.getElementById('transactionDate').value,
+                status: 'Completed',
+                description: document.getElementById('transactionDescription').value
+            };
+            
+            transactions.push(newTransaction);
+            loadFinancialData();
+            loadDashboardData();
+            
+            document.getElementById('transactionSuccessMessage').textContent = 'Transaction added successfully!';
+            document.getElementById('transactionSuccessMessage').style.display = 'block';
+            
+            setTimeout(() => {
+                closeModal('addTransactionModal');
+                document.getElementById('addTransactionForm').reset();
+                document.getElementById('transactionSuccessMessage').style.display = 'none';
+            }, 2000);
+        });
+
+        document.getElementById('scheduleMaintenanceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newMaintenance = {
+                id: maintenance.length + 1,
+                vehicleId: parseInt(document.getElementById('maintenanceVehicle').value),
+                serviceType: document.getElementById('maintenanceType').value,
+                scheduledDate: document.getElementById('maintenanceDate').value,
+                cost: parseFloat(document.getElementById('maintenanceCost').value) || 0,
+                status: 'Scheduled',
+                notes: document.getElementById('maintenanceNotes').value
+            };
+            
+            maintenance.push(newMaintenance);
+            loadMaintenanceData();
+            
+            document.getElementById('maintenanceSuccessMessage').textContent = 'Maintenance scheduled successfully!';
+            document.getElementById('maintenanceSuccessMessage').style.display = 'block';
+            
+            setTimeout(() => {
+                closeModal('scheduleMaintenanceModal');
+                document.getElementById('scheduleMaintenanceForm').reset();
+                document.getElementById('maintenanceSuccessMessage').style.display = 'none';
+            }, 2000);
+        });
+
+        document.getElementById('durationDiscountsForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            durationDiscounts['3to6'] = parseFloat(document.getElementById('discount3to6').value);
+            durationDiscounts.weekly = parseFloat(document.getElementById('discountWeekly').value);
+            durationDiscounts.biweekly = parseFloat(document.getElementById('discountBiWeekly').value);
+            durationDiscounts.monthly = parseFloat(document.getElementById('discountMonthly').value);
+            durationDiscounts.extended = parseFloat(document.getElementById('discountExtended').value);
+            
+            // Update the discount tiers display
+            updateDiscountTiersDisplay();
+            
+            document.getElementById('discountSuccessMessage').textContent = 'Duration discounts updated successfully!';
+            document.getElementById('discountSuccessMessage').style.display = 'block';
+            
+            setTimeout(() => {
+                closeModal('durationDiscountsModal');
+                document.getElementById('discountSuccessMessage').style.display = 'none';
+            }, 2000);
+        });
+
+        function updateDiscountTiersDisplay() {
+            const tiersContainer = document.getElementById('discountTiers');
+            tiersContainer.innerHTML = `
+                <div class="discount-tier">
+                    <h4>3-6 Day Discount</h4>
+                    <p>${durationDiscounts['3to6']}% discount for rentals 3-6 days</p>
+                </div>
+                <div class="discount-tier">
+                    <h4>Weekly Discount</h4>
+                    <p>${durationDiscounts.weekly}% discount for rentals 7-13 days</p>
+                </div>
+                <div class="discount-tier">
+                    <h4>Bi-Weekly Discount</h4>
+                    <p>${durationDiscounts.biweekly}% discount for rentals 14-20 days</p>
+                </div>
+                <div class="discount-tier">
+                    <h4>Monthly Discount</h4>
+                    <p>${durationDiscounts.monthly}% discount for rentals 21-59 days</p>
+                </div>
+                <div class="discount-tier">
+                    <h4>Extended Discount</h4>
+                    <p>${durationDiscounts.extended}% discount for rentals 60+ days</p>
+                </div>
+            `;
+        }
+
+        // Pricing calculator
+        function calculatePricing() {
+            const vehicleId = parseInt(document.getElementById('calcVehicle').value);
+            const startDate = document.getElementById('calcStartDate').value;
+            const endDate = document.getElementById('calcEndDate').value;
+            
+            if (!vehicleId || !startDate || !endDate) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            const vehicle = vehicles.find(v => v.id === vehicleId);
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            
+            if (days <= 0) {
+                alert('End date must be after start date');
+                return;
+            }
+            
+            const subtotal = days * vehicle.rate;
+            const discountPercent = calculateDurationDiscount(days);
+            const discountAmount = subtotal * (discountPercent / 100);
+            const total = subtotal - discountAmount;
+            
+            document.getElementById('calcDays').textContent = days;
+            document.getElementById('calcDailyRate').textContent = vehicle.rate.toFixed(2);
+            document.getElementById('calcSubtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('calcDiscountPercent').textContent = discountPercent + '%';
+            document.getElementById('calcDiscountAmount').textContent = discountAmount.toFixed(2);
+            document.getElementById('calcTotal').textContent = total.toFixed(2);
+            
+            if (discountPercent > 0) {
+                document.getElementById('calcSavingsMessage').textContent = 
+                    `Great savings! You save $${discountAmount.toFixed(2)} with our ${getDiscountName(days)} (${discountPercent}% off)!`;
+            } else {
+                document.getElementById('calcSavingsMessage').textContent = '';
+            }
+        }
+
+        // Auto-calculate pricing when dates change in reservation form
+        document.getElementById('reservationStartDate').addEventListener('change', updateReservationPricing);
+        document.getElementById('reservationEndDate').addEventListener('change', updateReservationPricing);
+        document.getElementById('reservationVehicle').addEventListener('change', updateReservationPricing);
+
+        function updateReservationPricing() {
+            const vehicleId = parseInt(document.getElementById('reservationVehicle').value);
+            const startDate = document.getElementById('reservationStartDate').value;
+            const endDate = document.getElementById('reservationEndDate').value;
+            
+            if (!vehicleId || !startDate || !endDate) return;
+            
+            const vehicle = vehicles.find(v => v.id === vehicleId);
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            
+            if (days <= 0) return;
+            
+            const subtotal = days * vehicle.rate;
+            const discountPercent = calculateDurationDiscount(days);
+            const discountAmount = subtotal * (discountPercent / 100);
+            const total = subtotal - discountAmount;
+            
+            document.getElementById('reservationDays').textContent = days;
+            document.getElementById('reservationDailyRate').textContent = vehicle.rate.toFixed(2);
+            document.getElementById('reservationSubtotal').textContent = subtotal.toFixed(2);
+            document.getElementById('reservationDiscount').textContent = discountPercent + '%';
+            document.getElementById('reservationTotal').textContent = total.toFixed(2);
+        }
+
+        // Calendar functions
+        function generateCalendar() {
+            const calendar = document.getElementById('pricingCalendar');
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            document.getElementById('calendarMonth').textContent = 
+                monthNames[currentCalendarMonth] + ' ' + currentCalendarYear;
+            
+            calendar.innerHTML = '';
+            
+            // Add day headers
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'calendar-header';
+                header.textContent = day;
+                calendar.appendChild(header);
+            });
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(currentCalendarYear, currentCalendarMonth, 1).getDay();
+            const daysInMonth = new Date(currentCalendarYear, currentCalendarMonth + 1, 0).getDate();
+            
+            // Add empty cells for days before month starts
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day';
+                calendar.appendChild(emptyDay);
+            }
+            
+            // Add days of month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = day;
+                
+                const dayOfWeek = new Date(currentCalendarYear, currentCalendarMonth, day).getDay();
+                if (dayOfWeek === 0 || dayOfWeek === 6) {
+                    dayElement.classList.add('weekend');
+                }
+                
+                dayElement.addEventListener('click', function() {
+                    document.querySelectorAll('.calendar-day').forEach(d => d.classList.remove('selected'));
+                    dayElement.classList.add('selected');
+                    selectedCalendarDate = day;
+                    
+                    // Show current price for selected date (simplified - using base rate)
+                    const vehicleId = parseInt(document.getElementById('calendarVehicle').value);
+                    if (vehicleId) {
+                        const vehicle = vehicles.find(v => v.id === vehicleId);
+                        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                        const price = isWeekend ? vehicle.rate * 1.2 : vehicle.rate; // 20% weekend premium
+                        document.getElementById('selectedDatePrice').value = price.toFixed(2);
+                    }
+                });
+                
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        function previousMonth() {
+            currentCalendarMonth--;
+            if (currentCalendarMonth < 0) {
+                currentCalendarMonth = 11;
+                currentCalendarYear--;
+            }
+            generateCalendar();
+        }
+
+        function nextMonth() {
+            currentCalendarMonth++;
+            if (currentCalendarMonth > 11) {
+                currentCalendarMonth = 0;
+                currentCalendarYear++;
+            }
+            generateCalendar();
+        }
+
+        function updateDatePrice() {
+            if (!selectedCalendarDate) {
+                alert('Please select a date first');
+                return;
+            }
+            
+            const price = parseFloat(document.getElementById('selectedDatePrice').value);
+            if (isNaN(price) || price < 0) {
+                alert('Please enter a valid price');
+                return;
+            }
+            
+            alert(`Price updated for ${currentCalendarMonth + 1}/${selectedCalendarDate}/${currentCalendarYear}: $${price.toFixed(2)}`);
+        }
+
+        // Delete functions (simplified)
+        function deleteVehicle(id) {
+            if (confirm('Are you sure you want to delete this vehicle?')) {
+                vehicles = vehicles.filter(v => v.id !== id);
+                loadVehiclesData();
+                loadDashboardData();
+            }
+        }
+
+        function deleteCustomer(id) {
+            if (confirm('Are you sure you want to delete this customer?')) {
+                customers = customers.filter(c => c.id !== id);
+                loadCustomersData();
+                loadDashboardData();
+            }
+        }
+
+        function cancelReservation(id) {
+            if (confirm('Are you sure you want to cancel this reservation?')) {
+                const reservation = reservations.find(r => r.id === id);
+                if (reservation) {
+                    reservation.status = 'Cancelled';
+                    loadReservationsData();
+                    loadDashboardData();
+                }
+            }
+        }
+
+        function deleteTransaction(id) {
+            if (confirm('Are you sure you want to delete this transaction?')) {
+                transactions = transactions.filter(t => t.id !== id);
+                loadFinancialData();
+                loadDashboardData();
+            }
+        }
+
+        function deleteMaintenance(id) {
+            if (confirm('Are you sure you want to delete this maintenance record?')) {
+                maintenance = maintenance.filter(m => m.id !== id);
+                loadMaintenanceData();
+            }
+        }
+
+        // Edit functions (simplified - just alerts for now)
+        function editVehicle(id) {
+            alert('Edit vehicle functionality would open a modal with the vehicle data pre-filled');
+        }
+
+        function editCustomer(id) {
+            alert('Edit customer functionality would open a modal with the customer data pre-filled');
+        }
+
+        function editReservation(id) {
+            alert('Edit reservation functionality would open a modal with the reservation data pre-filled');
+        }
+
+        function editTransaction(id) {
+            alert('Edit transaction functionality would open a modal with the transaction data pre-filled');
+        }
+
+        function editMaintenance(id) {
+            alert('Edit maintenance functionality would open a modal with the maintenance data pre-filled');
+        }
+
+        // Close modals when clicking outside
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+
+        // Initialize dashboard on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
+    </script>
+</body>
+</html>
+
