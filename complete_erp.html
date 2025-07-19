@@ -757,19 +757,25 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Year</label>
-                        <input type="number" name="year" min="1990" max="2025" required>
+                        <label>Vehicle Number</label>
+                        <input type="text" name="vehicle_number" placeholder="Internal vehicle ID" required>
                     </div>
                     <div class="form-group">
-                        <label>License Plate</label>
-                        <input type="text" name="license_plate" required>
+                        <label>Year</label>
+                        <input type="number" name="year" min="1990" max="2025" required>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
+                        <label>License Plate</label>
+                        <input type="text" name="license_plate" required>
+                    </div>
+                    <div class="form-group">
                         <label>Daily Rate ($)</label>
                         <input type="number" name="daily_rate" step="0.01" min="0" required>
                     </div>
+                </div>
+                <div class="form-row">
                     <div class="form-group">
                         <label>Status</label>
                         <select name="status" required>
@@ -907,7 +913,7 @@
     </div>
 
     <script>
-        const API_BASE = window.location.origin;
+        const API_BASE = 'http://198.91.25.229:5001';
         let authToken = null;
         let currentUser = null;
         let currentEditId = null;
@@ -1039,7 +1045,7 @@
         // Load vehicles
         async function loadVehicles() {
             try {
-                const vehicles = await apiCall('/api/vehicles');
+                const vehicles = await apiCall('/api/vehicles/');
                 const tbody = document.getElementById('vehiclesTable');
                 
                 if (vehicles.length === 0) {
@@ -1070,7 +1076,7 @@
         // Load customers
         async function loadCustomers() {
             try {
-                const customers = await apiCall('/api/customers');
+                const customers = await apiCall('/api/customers/');
                 const tbody = document.getElementById('customersTable');
                 
                 if (customers.length === 0) {
@@ -1101,7 +1107,7 @@
         // Load reservations
         async function loadReservations() {
             try {
-                const reservations = await apiCall('/api/reservations');
+                const reservations = await apiCall('/api/reservations/');
                 const tbody = document.getElementById('reservationsTable');
                 
                 if (reservations.length === 0) {
@@ -1203,12 +1209,12 @@
             
             try {
                 if (currentEditId) {
-                    await apiCall(`/api/vehicles/${currentEditId}`, {
+                    await apiCall(`/api/vehicles/${currentEditId}/`, {
                         method: 'PUT',
                         body: JSON.stringify(vehicleData),
                     });
                 } else {
-                    await apiCall('/api/vehicles', {
+                    await apiCall('/api/vehicles/', {
                         method: 'POST',
                         body: JSON.stringify(vehicleData),
                     });
@@ -1230,12 +1236,12 @@
             
             try {
                 if (currentEditId) {
-                    await apiCall(`/api/customers/${currentEditId}`, {
+                    await apiCall(`/api/customers/${currentEditId}/`, {
                         method: 'PUT',
                         body: JSON.stringify(customerData),
                     });
                 } else {
-                    await apiCall('/api/customers', {
+                    await apiCall('/api/customers/', {
                         method: 'POST',
                         body: JSON.stringify(customerData),
                     });
@@ -1257,12 +1263,12 @@
             
             try {
                 if (currentEditId) {
-                    await apiCall(`/api/reservations/${currentEditId}`, {
+                    await apiCall(`/api/reservations/${currentEditId}/`, {
                         method: 'PUT',
                         body: JSON.stringify(reservationData),
                     });
                 } else {
-                    await apiCall('/api/reservations', {
+                    await apiCall('/api/reservations/', {
                         method: 'POST',
                         body: JSON.stringify(reservationData),
                     });
