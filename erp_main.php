@@ -472,8 +472,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <h2>Add New Customer</h2>
             <form id="addCustomerForm" onsubmit="addCustomer(event)">
                 <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="customerName" required>
+                    <label>First Name</label>
+                    <input type="text" id="customerFirstName" required>
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" id="customerLastName" required>
                 </div>
                 <div class="form-group">
                     <label>Email</label>
@@ -484,8 +488,12 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                     <input type="tel" id="customerPhone" required>
                 </div>
                 <div class="form-group">
-                    <label>Driver's License</label>
+                    <label>Driver's License Number</label>
                     <input type="text" id="customerLicense" required>
+                </div>
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" id="customerDOB" required>
                 </div>
                 <div class="form-group">
                     <button type="button" class="btn" onclick="closeAddCustomerModal()">Cancel</button>
@@ -648,48 +656,43 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         }
 
         // Customer functions
-        function loadCustomers() {
-            // For now, use sample data since customer API is not implemented
-            customers = [
-                {
-                    id: 1,
-                    name: 'John Smith',
-                    email: 'john.smith@email.com',
-                    phone: '(555) 123-4567',
-                    license: 'DL123456789',
-                    rentals: 5
-                },
-                {
-                    id: 2,
-                    name: 'Sarah Johnson',
-                    email: 'sarah.j@email.com',
-                    phone: '(555) 987-6543',
-                    license: 'DL987654321',
-                    rentals: 3
+        async function loadCustomers() {
+            try {
+                const response = await fetch(`${API_BASE}/customers/`);
+                const data = await response.json();
+                
+                if (data.customers) {
+                    customers = data.customers;
+                    displayCustomers(customers);
+                } else {
+                    document.getElementById('customersList').innerHTML = '<div class="error">Failed to load customers</div>';
                 }
-            ];
-            displayCustomers(customers);
+            } catch (error) {
+                console.error('Error loading customers:', error);
+                document.getElementById('customersList').innerHTML = '<div class="error">Error loading customers</div>';
+            }
         }
 
         function displayCustomers(customerList) {
             const container = document.getElementById('customersList');
             
             if (customerList.length === 0) {
-                container.innerHTML = '<p>No customers found.</p>';
+                container.innerHTML = '<p>No customers found. <button class="btn btn-success" onclick="openAddCustomerModal()">Add your first customer</button></p>';
                 return;
             }
             
             const customerCards = customerList.map(customer => `
                 <div class="vehicle-card">
-                    <h4>${customer.name}</h4>
+                    <h4>${customer.first_name} ${customer.last_name}</h4>
                     <p><strong>Email:</strong> ${customer.email}</p>
                     <p><strong>Phone:</strong> ${customer.phone}</p>
-                    <p><strong>License:</strong> ${customer.license}</p>
-                    <p><strong>Total Rentals:</strong> ${customer.rentals}</p>
+                    <p><strong>License:</strong> ${customer.drivers_license_number}</p>
+                    <p><strong>Date of Birth:</strong> ${customer.date_of_birth || 'N/A'}</p>
+                    <p><strong>Status:</strong> ${customer.status || 'Active'}</p>
                     <div class="vehicle-actions">
-                        <button class="btn" onclick="editCustomer(${customer.id})">Edit</button>
-                        <button class="btn btn-warning" onclick="viewCustomerHistory(${customer.id})">View History</button>
-                        <button class="btn btn-danger" onclick="deactivateCustomer(${customer.id})">Deactivate</button>
+                        <button class="btn" onclick="editCustomer('${customer.id}')">Edit</button>
+                        <button class="btn btn-warning" onclick="viewCustomerHistory('${customer.id}')">View History</button>
+                        <button class="btn btn-danger" onclick="deactivateCustomer('${customer.id}')">Deactivate</button>
                     </div>
                 </div>
             `).join('');
@@ -699,9 +702,10 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
 
         function searchCustomers(query) {
             const filtered = customers.filter(customer => 
-                customer.name.toLowerCase().includes(query.toLowerCase()) ||
+                (customer.first_name + ' ' + customer.last_name).toLowerCase().includes(query.toLowerCase()) ||
                 customer.email.toLowerCase().includes(query.toLowerCase()) ||
-                customer.phone.includes(query)
+                customer.phone.includes(query) ||
+                customer.drivers_license_number.toLowerCase().includes(query.toLowerCase())
             );
             displayCustomers(filtered);
         }
@@ -719,24 +723,38 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             event.preventDefault();
             
             const customerData = {
-                name: document.getElementById('customerName').value,
+                first_name: document.getElementById('customerFirstName').value,
+                last_name: document.getElementById('customerLastName').value,
                 email: document.getElementById('customerEmail').value,
-                phone: document.getElementById('customerPhone').value,
-                license: document.getElementById('customerLicense').value
+                phone_number: document.getElementById('customerPhone').value,
+                drivers_license_number: document.getElementById('customerLicense').value,
+                date_of_birth: document.getElementById('customerDOB').value
             };
             
-            // For now, add to local array since customer API is not implemented
-            const newCustomer = {
-                id: customers.length + 1,
-                ...customerData,
-                rentals: 0
-            };
-            
-            customers.push(newCustomer);
-            closeAddCustomerModal();
-            displayCustomers(customers);
-            loadDashboardData();
-            showSuccess('Customer added successfully!');
+            try {
+                const response = await fetch(`${API_BASE}/customers/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(customerData)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showSuccess('Customer added successfully!');
+                    closeAddCustomerModal();
+                    document.getElementById('addCustomerForm').reset();
+                    loadCustomers(); // Reload the customer list
+                    loadDashboardData(); // Update dashboard stats
+                } else {
+                    const error = await response.json();
+                    showError('Error adding customer: ' + (error.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error adding customer:', error);
+                showError('Error adding customer: ' + error.message);
+            }
         }
 
         // Utility functions
