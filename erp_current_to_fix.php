@@ -533,7 +533,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div id="vehicles" class="module">
                 <h2>🚗 Vehicle Management</h2>
                 <div class="search-container">
-                    <button class="btn btn-success" onclick="safeCall(openAddVehicleModal)">+ Add Vehicle</button>
+                    <button class="btn btn-success" onclick="safeCall(openAddVehicleModal, 'Add Vehicle button')()">+ Add Vehicle</button>
                     <input type="text" placeholder="Search vehicles..." onkeyup="safeCall(() => searchVehicles(this.value))">
                 </div>
                 <div id="vehiclesList">
@@ -545,7 +545,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div id="customers" class="module">
                 <h2>👥 Customer Management</h2>
                 <div class="search-container">
-                    <button class="btn btn-success" onclick="safeCall(openAddCustomerModal)">+ Add Customer</button>
+                    <button class="btn btn-success" onclick="safeCall(openAddCustomerModal, 'Add Customer button')()">+ Add Customer</button>
                     <input type="text" placeholder="Search customers..." onkeyup="safeCall(() => searchCustomers(this.value))">
                 </div>
                 <div id="customersList">
@@ -557,7 +557,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div id="reservations" class="module">
                 <h2>📅 Reservation Management</h2>
                 <div class="search-container">
-                    <button class="btn btn-success" onclick="safeCall(openAddReservationModal)">+ New Reservation</button>
+                    <button class="btn btn-success" onclick="safeCall(openAddReservationModal, 'Add Reservation button')()">+ New Reservation</button>
                     <input type="text" placeholder="Search reservations..." onkeyup="safeCall(() => searchReservations(this.value))">
                 </div>
                 <div id="reservationsList">
@@ -569,7 +569,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div id="maintenance" class="module">
                 <h2>🔧 Maintenance Management</h2>
                 <div class="search-container">
-                    <button class="btn btn-success" onclick="safeCall(openAddMaintenanceModal)">+ Schedule Maintenance</button>
+                    <button class="btn btn-success" onclick="safeCall(openAddMaintenanceModal, 'Add Maintenance button')()">+ Schedule Maintenance</button>
                     <input type="text" placeholder="Search maintenance records..." onkeyup="safeCall(() => searchMaintenance(this.value))">
                 </div>
                 <div id="maintenanceList">
@@ -581,7 +581,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             <div id="financial" class="module">
                 <h2>📈 Financial Management</h2>
                 <div class="search-container">
-                    <button class="btn btn-success" onclick="safeCall(openAddTransactionModal)">+ Add Transaction</button>
+                    <button class="btn btn-success" onclick="safeCall(openAddTransactionModal, 'Add Transaction button')()">+ Add Transaction</button>
                     <input type="text" placeholder="Search transactions..." onkeyup="safeCall(() => searchTransactions(this.value))">
                 </div>
                 <div id="transactionsList">
@@ -609,7 +609,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     <!-- Add Vehicle Modal -->
     <div id="addVehicleModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="safeCall(closeAddVehicleModal)">&times;</span>
+            <span class="close" onclick="safeCall(closeAddVehicleModal, 'Close X button')()">&times;</span>
             <h2>Add New Vehicle</h2>
             <form id="addVehicleForm" onsubmit="safeCall((e) => addVehicle(e))">
                 <div class="form-group">
@@ -633,7 +633,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                     <input type="number" id="vehicleRate" step="0.01" min="0" required>
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-danger" onclick="safeCall(closeAddVehicleModal)">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="safeCall(closeAddVehicleModal, 'Cancel button')()">Cancel</button>
                     <button type="submit" class="btn btn-success">Add Vehicle</button>
                 </div>
             </form>
@@ -643,7 +643,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     <!-- Add Customer Modal -->
     <div id="addCustomerModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="safeCall(closeAddCustomerModal)">&times;</span>
+            <span class="close" onclick="safeCall(closeAddCustomerModal, 'Close X button')()">&times;</span>
             <h2>Add New Customer</h2>
             <form id="addCustomerForm" onsubmit="safeCall((e) => addCustomer(e))">
                 <div class="form-group">
@@ -667,7 +667,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                     <input type="date" id="customerDOB" required>
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-danger" onclick="safeCall(closeAddCustomerModal)">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="safeCall(closeAddCustomerModal, 'Cancel button')()">Cancel</button>
                     <button type="submit" class="btn btn-success">Add Customer</button>
                 </div>
             </form>
@@ -677,7 +677,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     <!-- Add Reservation Modal -->
     <div id="addReservationModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="safeCall(closeAddReservationModal)">&times;</span>
+            <span class="close" onclick="safeCall(closeAddReservationModal, 'Close X button')()">&times;</span>
             <h2>New Reservation</h2>
             <form id="addReservationForm" onsubmit="safeCall((e) => addReservation(e))">
                 <div class="form-group">
@@ -705,7 +705,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                     <input type="number" id="reservationAmount" step="0.01" min="0" required>
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-danger" onclick="safeCall(closeAddReservationModal)">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="safeCall(closeAddReservationModal, 'Cancel button')()">Cancel</button>
                     <button type="submit" class="btn btn-success">Create Reservation</button>
                 </div>
             </form>
@@ -715,9 +715,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     <!-- Add Maintenance Modal -->
     <div id="addMaintenanceModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="safeCall(closeAddMaintenanceModal)">&times;</span>
+            <span class="close" onclick="safeCall(closeAddMaintenanceModal, 'Close X button')()">&times;</span>
             <h2>Schedule Maintenance</h2>
-            <form id="addMaintenanceForm" onsubmit="return safeCall(addMaintenance, 'Maintenance form submission')(event)">
+            <form id="addMaintenanceForm" onsubmit="safeCall((e) => addMaintenance(e))">
                 <div class="form-group">
                     <label>Vehicle</label>
                     <select id="maintenanceVehicle" required>
@@ -750,7 +750,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                     <input type="number" id="maintenanceCost" step="0.01" min="0">
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-danger" onclick="safeCall(closeAddMaintenanceModal)">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="safeCall(closeAddMaintenanceModal, 'Cancel button')()">Cancel</button>
                     <button type="submit" class="btn btn-success">Schedule Maintenance</button>
                 </div>
             </form>
@@ -760,9 +760,9 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
     <!-- Add Transaction Modal -->
     <div id="addTransactionModal" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="safeCall(closeAddTransactionModal)">&times;</span>
+            <span class="close" onclick="safeCall(closeAddTransactionModal, 'Close X button')()">&times;</span>
             <h2>Add Transaction</h2>
-            <form id="addTransactionForm" onsubmit="return safeCall(addTransaction, 'Transaction form submission')(event)">
+            <form id="addTransactionForm" onsubmit="safeCall((e) => addTransaction(e))">
                 <div class="form-group">
                     <label>Type</label>
                     <select id="transactionType" required>
@@ -788,7 +788,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
                     <input type="date" id="transactionDate" required>
                 </div>
                 <div class="form-group">
-                    <button type="button" class="btn btn-danger" onclick="safeCall(closeAddTransactionModal)">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="safeCall(closeAddTransactionModal, 'Cancel button')()">Cancel</button>
                     <button type="submit" class="btn btn-success">Add Transaction</button>
                 </div>
             </form>
