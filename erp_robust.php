@@ -611,7 +611,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         <div class="modal-content">
             <span class="close" onclick="safeCall(closeAddVehicleModal)">&times;</span>
             <h2>Add New Vehicle</h2>
-            <form id="addVehicleForm" onsubmit="safeCall(addVehicle, 'Vehicle form submission')(event); return false;">
+            <form id="addVehicleForm" onsubmit="event.preventDefault(); event.stopPropagation(); console.log('Vehicle form prevented!'); safeCall(addVehicle, 'Vehicle form submission')(event); return false;">
                 <div class="form-group">
                     <label>Make</label>
                     <input type="text" id="vehicleMake" required>
@@ -645,7 +645,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         <div class="modal-content">
             <span class="close" onclick="safeCall(closeAddCustomerModal)">&times;</span>
             <h2>Add New Customer</h2>
-            <form id="addCustomerForm" onsubmit="safeCall(addCustomer, 'Customer form submission')(event); return false;">
+            <form id="addCustomerForm" onsubmit="event.preventDefault(); event.stopPropagation(); console.log('Customer form prevented!'); safeCall(addCustomer, 'Customer form submission')(event); return false;">
                 <div class="form-group">
                     <label>First Name</label>
                     <input type="text" id="customerFirstName" required>
@@ -679,7 +679,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         <div class="modal-content">
             <span class="close" onclick="safeCall(closeAddReservationModal)">&times;</span>
             <h2>New Reservation</h2>
-            <form id="addReservationForm" onsubmit="safeCall(addReservation, 'Reservation form submission')(event); return false;">
+            <form id="addReservationForm" onsubmit="event.preventDefault(); event.stopPropagation(); console.log('Reservation form prevented!'); safeCall(addReservation, 'Reservation form submission')(event); return false;">
                 <div class="form-group">
                     <label>Customer</label>
                     <select id="reservationCustomer" required>
@@ -717,7 +717,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         <div class="modal-content">
             <span class="close" onclick="safeCall(closeAddMaintenanceModal)">&times;</span>
             <h2>Schedule Maintenance</h2>
-            <form id="addMaintenanceForm" onsubmit="safeCall(addMaintenance, 'Maintenance form submission')(event); return false;">
+            <form id="addMaintenanceForm" onsubmit="event.preventDefault(); event.stopPropagation(); console.log('Maintenance form prevented!'); safeCall(addMaintenance, 'Maintenance form submission')(event); return false;">
                 <div class="form-group">
                     <label>Vehicle</label>
                     <select id="maintenanceVehicle" required>
@@ -762,7 +762,7 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
         <div class="modal-content">
             <span class="close" onclick="safeCall(closeAddTransactionModal)">&times;</span>
             <h2>Add Transaction</h2>
-            <form id="addTransactionForm" onsubmit="safeCall(addTransaction, 'Transaction form submission')(event); return false;">
+            <form id="addTransactionForm" onsubmit="event.preventDefault(); event.stopPropagation(); console.log('Transaction form prevented!'); safeCall(addTransaction, 'Transaction form submission')(event); return false;">
                 <div class="form-group">
                     <label>Type</label>
                     <select id="transactionType" required>
@@ -2479,6 +2479,68 @@ if (!isset($_SESSION['logged_in']) || $_SESSION['logged_in'] !== true) {
             ErrorHandler.logError(event.reason, 'Unhandled promise rejection');
             ErrorHandler.showUserError('An operation failed unexpectedly. Please try again.');
             event.preventDefault(); // Prevent the default console error
+        });
+
+        // Add event listeners for all forms when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Setting up form event listeners...');
+            
+            // Vehicle form event listener
+            const vehicleForm = document.getElementById('addVehicleForm');
+            if (vehicleForm) {
+                vehicleForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    console.log('Vehicle form submitted via event listener');
+                    safeCall(addVehicle, 'Vehicle form submission')(event);
+                });
+            }
+            
+            // Customer form event listener
+            const customerForm = document.getElementById('addCustomerForm');
+            if (customerForm) {
+                customerForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    console.log('Customer form submitted via event listener');
+                    safeCall(addCustomer, 'Customer form submission')(event);
+                });
+            }
+            
+            // Reservation form event listener
+            const reservationForm = document.getElementById('addReservationForm');
+            if (reservationForm) {
+                reservationForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    console.log('Reservation form submitted via event listener');
+                    safeCall(addReservation, 'Reservation form submission')(event);
+                });
+            }
+            
+            // Maintenance form event listener
+            const maintenanceForm = document.getElementById('addMaintenanceForm');
+            if (maintenanceForm) {
+                maintenanceForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    console.log('Maintenance form submitted via event listener');
+                    safeCall(addMaintenance, 'Maintenance form submission')(event);
+                });
+            }
+            
+            // Financial form event listener
+            const transactionForm = document.getElementById('addTransactionForm');
+            if (transactionForm) {
+                transactionForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    console.log('Transaction form submitted via event listener');
+                    safeCall(addTransaction, 'Transaction form submission')(event);
+                });
+            }
+            
+            console.log('All form event listeners set up successfully');
         });
 
     </script>
